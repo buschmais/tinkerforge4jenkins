@@ -6,12 +6,14 @@ import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractDeviceNotifier;
 import com.tinkerforge.BrickletLCD20x4;
+import com.tinkerforge.BrickletLCD20x4.ButtonPressedListener;
 
 public class LCD20x4BrickletNotifier extends
-		AbstractDeviceNotifier<BrickletLCD20x4> {
+		AbstractDeviceNotifier<BrickletLCD20x4> implements ButtonPressedListener {
 
 	public LCD20x4BrickletNotifier(BrickletLCD20x4 brickletLCD20x4) {
 		super(brickletLCD20x4);
+		brickletLCD20x4.addListener(this);
 	}
 
 	@Override
@@ -67,5 +69,9 @@ public class LCD20x4BrickletNotifier extends
 		getDevice().backlightOn();
 		getDevice().writeLine((short) 0, (short) 0, "No status available");
 		getDevice().writeLine((short) 1, (short) 0, message);
+	}
+
+	@Override
+	public void buttonPressed(short button) {
 	}
 }

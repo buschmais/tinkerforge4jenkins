@@ -6,6 +6,36 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
+	<url>http://github.com/DirkMahler/tinkerforge4jenkins</url>
+
+	<description>
+    	Contains various notifiers to display the status of Jenkins jobs (http://jenkins-ci.org) using TinkerForge (http://www.tinkerforge.com) bricks and bricklets.  
+    </description>
+
+	<organization>
+		<name>buschmais GbR</name>
+		<url>http://www.buschmais.com</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:git:git://github.com/DirkMahler/tinkerforge4jenkins.git</connection>
+		<developerConnection>scm:git:git@github.com:DirkMahler/tinkerforge4jenkins.git</developerConnection>
+		<url>https://github.com/DirkMahler/tinkerforge4jenkins</url>
+	</scm>
+	<developers>
+		<developer>
+			<id>dirk-mahler</id>
+			<name>Dirk Mahler</name>
+			<email>dirk.mahler@buschmais.com</email>
+		</developer>
+	</developers>
+
 	<build>
 		<pluginManagement>
 			<plugins>
