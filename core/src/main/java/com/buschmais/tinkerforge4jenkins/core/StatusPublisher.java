@@ -1,4 +1,4 @@
-package com.buschmais.tf4jenkins;
+package com.buschmais.tinkerforge4jenkins.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.codehaus.jackson.JsonNode;
 
-import com.buschmais.tf4jenkins.notifier.DualRelayBrickletNotifier;
-import com.buschmais.tf4jenkins.notifier.LCD20x4BrickletNotifier;
+import com.buschmais.tinkerforge4jenkins.core.notifier.dualrelay.DualRelayBrickletNotifier;
+import com.buschmais.tinkerforge4jenkins.core.notifier.lcd20x4.LCD20x4BrickletNotifier;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.IPConnection;
@@ -28,7 +28,6 @@ public class StatusPublisher {
 	public void publish() throws Exception {
 		IPConnection ipcon = new IPConnection(host, port);
 		ipcon.enumerate(new EnumerateListener() {
-
 			@Override
 			public void enumerate(String uid, String name, short stackID,
 					boolean isNew) {
@@ -64,20 +63,20 @@ public class StatusPublisher {
 			for (BrickletNotifier notifier : notifiers) {
 				notifier.preUpdate();
 			}
-			List<JobSummary> summaries = null;
+			List<JobState> states = null;
 			try {
-				summaries = getSummaries();
+				states = getJobStates();
 			} catch (Exception e) {
 				for (BrickletNotifier notifier : notifiers) {
 					notifier.updateFailed(e.getMessage());
 				}
 				e.printStackTrace();
 			}
-			if (summaries != null) {
-				System.out.println(summaries);
-				for (JobSummary summary : summaries) {
+			if (states != null) {
+				System.out.println(states);
+				for (JobState state : states) {
 					for (BrickletNotifier notifier : notifiers) {
-						notifier.setSummary(summary);
+						notifier.update(state);
 					}
 				}
 			}
@@ -86,8 +85,8 @@ public class StatusPublisher {
 			}
 		}
 
-		private List<JobSummary> getSummaries() throws IOException {
-			List<JobSummary> result = new ArrayList<JobSummary>();
+		private List<JobState> getJobStates() throws IOException {
+			List<JobState> result = new ArrayList<JobState>();
 			JenkinsJsonReader jsonReader = new JenkinsJsonReader();
 			String url = "http://localhost:9090/jenkins";
 			JsonNode node = jsonReader.read(url);
@@ -98,16 +97,16 @@ public class StatusPublisher {
 					String jobUrl = jobNode.get("url").getTextValue();
 					JsonNode lastBuildNode = jsonReader.read(jobUrl
 							+ "lastBuild");
-					String jobState = lastBuildNode.get("result")
+					String buildState = lastBuildNode.get("result")
 							.getTextValue();
-					JobSummary summary = new JobSummary();
-					summary.setName(jobName);
-					if (jobState != null) {
-						summary.setStatus(JobStatus.valueOf(jobState));
+					JobState state = new JobState();
+					state.setName(jobName);
+					if (buildState != null) {
+						state.setBuildState(BuildState.valueOf(buildState));
 					} else {
-						summary.setStatus(JobStatus.UNKNOWN);
+						state.setBuildState(BuildState.UNKNOWN);
 					}
-					result.add(summary);
+					result.add(state);
 				}
 			}
 			return result;

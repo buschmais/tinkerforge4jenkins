@@ -1,19 +1,18 @@
-package com.buschmais.tf4jenkins;
+package com.buschmais.tinkerforge4jenkins.core;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
-public class JsonReader {
+public class JenkinsJsonReader {
 
-	public JsonNode read(String url) throws HttpException, IOException {
+	public JsonNode read(String url) throws IOException {
 		HttpClient httpClient = new HttpClient();
 		HttpMethod method = new GetMethod(url + "/api/json");
 		int status = httpClient.executeMethod(method);

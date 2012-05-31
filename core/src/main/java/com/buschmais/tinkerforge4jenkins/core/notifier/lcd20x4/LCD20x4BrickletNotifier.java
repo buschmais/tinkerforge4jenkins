@@ -1,12 +1,13 @@
-package com.buschmais.tf4jenkins.notifier;
+package com.buschmais.tinkerforge4jenkins.core.notifier.lcd20x4;
 
 import java.util.Iterator;
 
-import com.buschmais.tf4jenkins.JobStatus;
-import com.buschmais.tf4jenkins.JobSummary;
+import com.buschmais.tinkerforge4jenkins.core.BuildState;
+import com.buschmais.tinkerforge4jenkins.core.JobState;
+import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractBrickletNotifier;
 import com.tinkerforge.BrickletLCD20x4;
 
-public class LCD20x4BrickletNotifier extends StatefulBrickletNotifier {
+public class LCD20x4BrickletNotifier extends AbstractBrickletNotifier {
 
 	private BrickletLCD20x4 bricklet;
 
@@ -23,21 +24,21 @@ public class LCD20x4BrickletNotifier extends StatefulBrickletNotifier {
 	@Override
 	public void postUpdate() {
 		bricklet.clearDisplay();
-		if (getJobsByStatus(JobStatus.ABORTED).isEmpty()
-				&& getJobsByStatus(JobStatus.FAILURE).isEmpty()
-				&& getJobsByStatus(JobStatus.UNKNOWN).isEmpty()
-				&& getJobsByStatus(JobStatus.UNSTABLE).isEmpty()) {
+		if (getJobsByBuildState(BuildState.ABORTED).isEmpty()
+				&& getJobsByBuildState(BuildState.FAILURE).isEmpty()
+				&& getJobsByBuildState(BuildState.UNKNOWN).isEmpty()
+				&& getJobsByBuildState(BuildState.UNSTABLE).isEmpty()) {
 			bricklet.backlightOff();
 		} else {
 			bricklet.backlightOn();
-			Iterator<JobSummary> iterator = getJobSummaries().values()
+			Iterator<JobState> iterator = getJobState().values()
 					.iterator();
 			int i = 0;
 			while (iterator.hasNext() && i < 4) {
-				JobSummary summary = iterator.next();
-				if (!JobStatus.SUCCESS.equals(summary.getStatus())) {
+				JobState summary = iterator.next();
+				if (!BuildState.SUCCESS.equals(summary.getBuildState())) {
 					char symbol;
-					switch (summary.getStatus()) {
+					switch (summary.getBuildState()) {
 					case ABORTED:
 						symbol = 'A';
 						break;

@@ -1,10 +1,10 @@
-package com.buschmais.tf4jenkins;
+package com.buschmais.tinkerforge4jenkins.core;
 
 public interface BrickletNotifier {
 
 	void preUpdate();
 	
-	void setSummary(JobSummary summary);
+	void update(JobState state);
 	
 	void postUpdate();
 

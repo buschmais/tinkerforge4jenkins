@@ -1,10 +1,10 @@
-package com.buschmais.tf4jenkins;
+package com.buschmais.tinkerforge4jenkins.core;
 
-public class JobSummary {
+public class JobState {
 
 	private String name;
 
-	private JobStatus status;
+	private BuildState buildState;
 
 	/**
 	 * @return the name
@@ -24,16 +24,16 @@ public class JobSummary {
 	/**
 	 * @return the status
 	 */
-	public JobStatus getStatus() {
-		return status;
+	public BuildState getBuildState() {
+		return buildState;
 	}
 
 	/**
-	 * @param status
+	 * @param buildState
 	 *            the status to set
 	 */
-	public void setStatus(JobStatus status) {
-		this.status = status;
+	public void setBuildState(BuildState buildState) {
+		this.buildState = buildState;
 	}
 
 	/*
@@ -43,7 +43,7 @@ public class JobSummary {
 	 */
 	@Override
 	public String toString() {
-		return "JobSummary [name=" + name + ", status=" + status + "]";
+		return "JobSummary [name=" + name + ", status=" + buildState + "]";
 	}
 
 }
