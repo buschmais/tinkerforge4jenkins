@@ -1,6 +1,8 @@
 package com.buschmais.tinkerforge4jenkins.core;
 
-public interface BrickletNotifier {
+import com.tinkerforge.Device;
+
+public interface DeviceNotifier {
 
 	void preUpdate();
 	
@@ -9,5 +11,7 @@ public interface BrickletNotifier {
 	void postUpdate();
 
 	void updateFailed(String message);
+	
+	Device getDevice();
 		
 }

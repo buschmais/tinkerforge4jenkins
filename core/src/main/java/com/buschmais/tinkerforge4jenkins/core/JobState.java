@@ -43,7 +43,7 @@ public class JobState {
 	 */
 	@Override
 	public String toString() {
-		return "JobSummary [name=" + name + ", status=" + buildState + "]";
+		return "JobState [name=" + name + ", status=" + buildState + "]";
 	}
 
 }

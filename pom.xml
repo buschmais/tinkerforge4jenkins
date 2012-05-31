@@ -25,9 +25,25 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
+				<groupId>com.buschmais.tinkerforge4jenkins</groupId>
+				<artifactId>tinkerforge4jenkins-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.tinkerforge</groupId>
+				<artifactId>tinkerforge-bindings</artifactId>
+				<version>1.0.8</version>
+			</dependency>
+			<dependency>
 				<groupId>commons-httpclient</groupId>
 				<artifactId>commons-httpclient</artifactId>
 				<version>3.1</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>commons-logging</artifactId>
+						<groupId>commons-logging</groupId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
@@ -35,9 +51,20 @@
 				<version>1.9.2</version>
 			</dependency>
 			<dependency>
-				<groupId>com.tinkerforge</groupId>
-				<artifactId>tinkerforge-bindings</artifactId>
-				<version>1.0.8</version>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.6.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>1.6.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.6.1</version>
+				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -47,8 +74,9 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<modules>
 		<module>core</module>
+		<module>client</module>
 	</modules>
 </project>

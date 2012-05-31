@@ -1,15 +1,13 @@
 package com.buschmais.tinkerforge4jenkins.core.notifier.dualrelay;
 
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
-import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractBrickletNotifier;
+import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractDeviceNotifier;
 import com.tinkerforge.BrickletDualRelay;
 
-public class DualRelayBrickletNotifier extends AbstractBrickletNotifier {
-
-    private BrickletDualRelay bricklet;
+public class DualRelayBrickletNotifier extends AbstractDeviceNotifier<BrickletDualRelay> {
 
     public DualRelayBrickletNotifier(BrickletDualRelay brickletDualRelay) {
-        this.bricklet = brickletDualRelay;
+        super(brickletDualRelay);
     }
 
     @Override
@@ -20,9 +18,9 @@ public class DualRelayBrickletNotifier extends AbstractBrickletNotifier {
     public void postUpdate() {
         if (getJobsByBuildState(BuildState.ABORTED).isEmpty() && getJobsByBuildState(BuildState.FAILURE).isEmpty()
                 && getJobsByBuildState(BuildState.UNSTABLE).isEmpty()) {
-            bricklet.setState(false, false);
+            getDevice().setState(false, false);
         } else {
-            bricklet.setState(true, true);
+        	getDevice().setState(true, true);
         }
     }
 

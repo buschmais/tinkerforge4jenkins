@@ -4,35 +4,33 @@ import java.util.Iterator;
 
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
-import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractBrickletNotifier;
+import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractDeviceNotifier;
 import com.tinkerforge.BrickletLCD20x4;
 
-public class LCD20x4BrickletNotifier extends AbstractBrickletNotifier {
-
-	private BrickletLCD20x4 bricklet;
+public class LCD20x4BrickletNotifier extends
+		AbstractDeviceNotifier<BrickletLCD20x4> {
 
 	public LCD20x4BrickletNotifier(BrickletLCD20x4 brickletLCD20x4) {
-		this.bricklet = brickletLCD20x4;
+		super(brickletLCD20x4);
 	}
 
 	@Override
 	public void preUpdate() {
-		bricklet.clearDisplay();
-		bricklet.writeLine((short) 0, (short) 0, "Updating status...");
+		getDevice().clearDisplay();
+		getDevice().writeLine((short) 0, (short) 0, "Updating status...");
 	}
 
 	@Override
 	public void postUpdate() {
-		bricklet.clearDisplay();
+		getDevice().clearDisplay();
 		if (getJobsByBuildState(BuildState.ABORTED).isEmpty()
 				&& getJobsByBuildState(BuildState.FAILURE).isEmpty()
 				&& getJobsByBuildState(BuildState.UNKNOWN).isEmpty()
 				&& getJobsByBuildState(BuildState.UNSTABLE).isEmpty()) {
-			bricklet.backlightOff();
+			getDevice().backlightOff();
 		} else {
-			bricklet.backlightOn();
-			Iterator<JobState> iterator = getJobState().values()
-					.iterator();
+			getDevice().backlightOn();
+			Iterator<JobState> iterator = getJobState().values().iterator();
 			int i = 0;
 			while (iterator.hasNext() && i < 4) {
 				JobState summary = iterator.next();
@@ -56,7 +54,7 @@ public class LCD20x4BrickletNotifier extends AbstractBrickletNotifier {
 						symbol = '?';
 					}
 					String statusLine = symbol + " " + summary.getName();
-					bricklet.writeLine((short) i, (short) 0, statusLine);
+					getDevice().writeLine((short) i, (short) 0, statusLine);
 					i++;
 				}
 			}
@@ -65,9 +63,9 @@ public class LCD20x4BrickletNotifier extends AbstractBrickletNotifier {
 
 	@Override
 	public void updateFailed(String message) {
-		bricklet.clearDisplay();
-		bricklet.backlightOn();
-		bricklet.writeLine((short) 0, (short) 0, "No status available");
-		bricklet.writeLine((short) 1, (short) 0, message);
+		getDevice().clearDisplay();
+		getDevice().backlightOn();
+		getDevice().writeLine((short) 0, (short) 0, "No status available");
+		getDevice().writeLine((short) 1, (short) 0, message);
 	}
 }

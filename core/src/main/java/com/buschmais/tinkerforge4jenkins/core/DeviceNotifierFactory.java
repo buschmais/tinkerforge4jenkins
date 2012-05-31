@@ -1,10 +1,10 @@
 package com.buschmais.tinkerforge4jenkins.core;
 
 
-public interface BrickletNotifierFactory {
+public interface DeviceNotifierFactory {
 
 	boolean match(String identifier);
 	
-	BrickletNotifier create(String uid);
+	DeviceNotifier create(String uid);
 	
 }
