@@ -6,30 +6,28 @@ import com.tinkerforge.BrickletDualRelay;
 
 public class DualRelayBrickletNotifier extends AbstractBrickletNotifier {
 
-	private BrickletDualRelay bricklet;
+    private BrickletDualRelay bricklet;
 
-	public DualRelayBrickletNotifier(BrickletDualRelay brickletDualRelay) {
-		this.bricklet = brickletDualRelay;
-	}
+    public DualRelayBrickletNotifier(BrickletDualRelay brickletDualRelay) {
+        this.bricklet = brickletDualRelay;
+    }
 
-	@Override
-	public void preUpdate() {
-	}
+    @Override
+    public void preUpdate() {
+    }
 
-	@Override
-	public void postUpdate() {
-		if (getJobsByBuildState(BuildState.ABORTED).isEmpty()
-				&& getJobsByBuildState(BuildState.FAILURE).isEmpty()
-				&& getJobsByBuildState(BuildState.UNKNOWN).isEmpty()
-				&& getJobsByBuildState(BuildState.UNSTABLE).isEmpty()) {
-			bricklet.setState(false, false);
-		} else {
-			bricklet.setState(true, true);
-		}
-	}
+    @Override
+    public void postUpdate() {
+        if (getJobsByBuildState(BuildState.ABORTED).isEmpty() && getJobsByBuildState(BuildState.FAILURE).isEmpty()
+                && getJobsByBuildState(BuildState.UNSTABLE).isEmpty()) {
+            bricklet.setState(false, false);
+        } else {
+            bricklet.setState(true, true);
+        }
+    }
 
-	@Override
-	public void updateFailed(String message) {
-	}
+    @Override
+    public void updateFailed(String message) {
+    }
 
 }
