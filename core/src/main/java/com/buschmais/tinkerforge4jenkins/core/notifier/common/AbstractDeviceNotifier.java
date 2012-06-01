@@ -46,7 +46,7 @@ public abstract class AbstractDeviceNotifier<T extends Device> implements
 	/**
 	 * @return the jobSummaries
 	 */
-	public SortedMap<String, JobState> getJobState() {
+	public SortedMap<String, JobState> getJobStates() {
 		return jobStates;
 	}
 
