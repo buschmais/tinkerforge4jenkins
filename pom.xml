@@ -39,7 +39,7 @@
 	<repositories>
 		<repository>
 			<id>buschmais-thirdparty-releases</id>
-			<url>https://repository.buschmais.com/thirdparty/</url>
+			<url>http://repository.buschmais.com/thirdparty/</url>
 		</repository>
 		<repository>
 			<id>java.net</id>
