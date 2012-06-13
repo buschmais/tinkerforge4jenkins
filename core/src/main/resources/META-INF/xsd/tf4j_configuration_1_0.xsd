@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:tf4jconfig="http://www.buschmais.com/TinkerForge4Jenkins/core/schema/configuration/v1.0"
+	targetNamespace="http://www.buschmais.com/TinkerForge4Jenkins/core/schema/configuration/v1.0"
+	elementFormDefault="qualified">
+
+	<xs:element name="configuration" type="tf4jconfig:ConfigurationType" />
+
+	<xs:complexType name="ConfigurationType">
+		<xs:sequence>
+			<xs:element name="jenkins" type="tf4jconfig:JenkinsType" />
+			<xs:element name="bricklets" minOccurs="0">
+				<xs:complexType>
+					<xs:choice maxOccurs="unbounded" minOccurs="0">
+						<xs:element name="dualRelay" type="tf4jconfig:DualRelayType"
+							minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="lcd20x4" type="tf4jconfig:LCD20x4Type"
+							minOccurs="0" maxOccurs="unbounded" />
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="JenkinsType">
+		<xs:sequence>
+			<xs:element name="url" type="xs:string" />
+			<xs:element name="update-interval">
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minExclusive value="0" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="BrickletType" abstract="true">
+		<xs:sequence>
+			<xs:element name="uid" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="JobsType">
+		<xs:sequence>
+			<xs:element name="job" type="xs:string" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="DualRelayType">
+		<xs:complexContent>
+			<xs:extension base="tf4jconfig:BrickletType">
+				<xs:sequence>
+					<xs:element name="port" type="tf4jconfig:DualRelayPortType"
+						maxOccurs="2" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="DualRelayPortType">
+		<xs:sequence>
+			<xs:element name="id">
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:enumeration value="0" />
+						<xs:enumeration value="1" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="jobs" type="tf4jconfig:JobsType"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="LCD20x4Type">
+		<xs:complexContent>
+			<xs:extension base="tf4jconfig:BrickletType">
+				<xs:sequence>
+					<xs:element name="jobs" type="tf4jconfig:JobsType"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+</xs:schema>
