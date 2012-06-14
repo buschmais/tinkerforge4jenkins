@@ -12,8 +12,9 @@
 			<xs:element name="bricklets" minOccurs="0">
 				<xs:complexType>
 					<xs:choice maxOccurs="unbounded" minOccurs="0">
-						<xs:element name="dualRelay" type="tf4jconfig:DualRelayConfigurationType"
-							minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="dualRelay"
+							type="tf4jconfig:DualRelayConfigurationType" minOccurs="0"
+							maxOccurs="unbounded" />
 						<xs:element name="lcd20x4" type="tf4jconfig:LCD20x4ConfigurationType"
 							minOccurs="0" maxOccurs="unbounded" />
 					</xs:choice>
@@ -25,7 +26,7 @@
 	<xs:complexType name="JenkinsConfigurationType">
 		<xs:sequence>
 			<xs:element name="url" type="xs:string" />
-			<xs:element name="update-interval">
+			<xs:element name="update-interval" minOccurs="0" default="30">
 				<xs:simpleType>
 					<xs:restriction base="xs:int">
 						<xs:minExclusive value="0" />
@@ -35,7 +36,8 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="BrickletConfigurationType" abstract="true">
+	<xs:complexType name="BrickletConfigurationType"
+		abstract="true">
 		<xs:sequence>
 			<xs:element name="uid" type="xs:string" minOccurs="0" />
 		</xs:sequence>
