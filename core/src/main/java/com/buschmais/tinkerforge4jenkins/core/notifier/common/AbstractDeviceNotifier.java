@@ -7,15 +7,18 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.buschmais.tinkerforge4jenkins.core.DeviceNotifier;
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
+import com.buschmais.tinkerforge4jenkins.core.DeviceNotifier;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
 import com.tinkerforge.Device;
 
-public abstract class AbstractDeviceNotifier<T extends Device> implements
-		DeviceNotifier {
+public abstract class AbstractDeviceNotifier<T extends Device, C extends BrickletConfigurationType>
+		implements DeviceNotifier<T, C> {
 
 	private T device;
+
+	private C configuration;
 
 	private SortedMap<String, JobState> jobStates = new TreeMap<String, JobState>();
 
@@ -31,6 +34,16 @@ public abstract class AbstractDeviceNotifier<T extends Device> implements
 	@Override
 	public T getDevice() {
 		return device;
+	}
+
+	@Override
+	public void setConfiguration(C configuration) {
+		this.configuration = configuration;
+	}
+
+	@Override
+	public C getConfiguration() {
+		return configuration;
 	}
 
 	@Override
@@ -56,5 +69,4 @@ public abstract class AbstractDeviceNotifier<T extends Device> implements
 	public Set<JobState> getJobsByBuildState(BuildState buildState) {
 		return jobStatesByBuildState.get(buildState);
 	}
-
 }

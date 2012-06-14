@@ -1,17 +1,22 @@
 package com.buschmais.tinkerforge4jenkins.core;
 
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
 import com.tinkerforge.Device;
 
-public interface DeviceNotifier {
+public interface DeviceNotifier<T extends Device, C extends BrickletConfigurationType> {
 
 	void preUpdate();
-	
+
 	void update(JobState state);
-	
+
 	void postUpdate();
 
 	void updateFailed(String message);
-	
-	Device getDevice();
-		
+
+	T getDevice();
+
+	void setConfiguration(C configuration);
+
+	BrickletConfigurationType getConfiguration();
+
 }

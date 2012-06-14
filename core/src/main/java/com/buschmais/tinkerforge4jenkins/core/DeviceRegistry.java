@@ -8,6 +8,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.ConfigurationType;
+import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
 import com.tinkerforge.IPConnection.EnumerateListener;
 import com.tinkerforge.IPConnection.TimeoutException;
@@ -22,15 +25,19 @@ public class DeviceRegistry {
 
 	private String host;
 	private int port;
+	private ConfigurationType.Bricklets brickletsConfiguration;
 
-	private List<DeviceNotifier> notifiers = new CopyOnWriteArrayList<DeviceNotifier>();
+	private List<DeviceNotifier<? extends Device, ? extends BrickletConfigurationType>> notifiers = new CopyOnWriteArrayList<DeviceNotifier<? extends Device, ? extends BrickletConfigurationType>>();
 
-	public DeviceRegistry(String host, int port) {
+	public DeviceRegistry(String host, int port,
+			ConfigurationType.Bricklets brickletsConfiguration) {
 		this.host = host;
 		this.port = port;
+		this.brickletsConfiguration = brickletsConfiguration;
 	}
 
-	public List<DeviceNotifier> start() throws IOException {
+	public List<DeviceNotifier<? extends Device, ? extends BrickletConfigurationType>> start()
+			throws IOException {
 		final IPConnection ipcon = new IPConnection(host, port);
 		ipcon.enumerate(new EnumerateListener() {
 			@Override
@@ -40,10 +47,15 @@ public class DeviceRegistry {
 						uid);
 				for (DeviceNotifierFactory factory : serviceLoader) {
 					if (factory.match(name.trim())) {
-						LOGGER.info(
-								"Registering notifier '{}' (uid='{}').",
+						LOGGER.info("Registering notifier '{}' (uid='{}').",
 								name.trim(), uid);
-						DeviceNotifier notifier = factory.create(uid);
+						DeviceNotifier<? extends Device, ? extends BrickletConfigurationType> notifier = factory
+								.create(uid);
+						for (BrickletConfigurationType brickletConfiguration : brickletsConfiguration
+								.getDualRelayOrLcd20X4()) {
+							if (uid.equals(brickletConfiguration.getUid())) {
+							}
+						}
 						notifiers.add(notifier);
 						try {
 							ipcon.addDevice(notifier.getDevice());

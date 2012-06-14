@@ -22,57 +22,61 @@ import com.buschmais.tinkerforge4jenkins.core.JobState;
 
 public class JenkinsJsonClient {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JenkinsJsonClient.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(JenkinsJsonClient.class);
 
-    private Set<String> jobFilter = new HashSet<String>();
+	private Set<String> jobFilter = new HashSet<String>();
 
-    public JenkinsJsonClient() {
-        jobFilter.add("[a-zA-Z0-9]+_Continuous");
-        jobFilter.add("[a-zA-Z0-9]+_IntegrationTest");
-    }
+	public JenkinsJsonClient() {
+		jobFilter.add("[a-zA-Z0-9]+_Continuous");
+		jobFilter.add("[a-zA-Z0-9]+_IntegrationTest");
+	}
 
-    private JsonNode read(String url) throws IOException {
-        HttpClient httpClient = new HttpClient();
-        HttpMethod method = new GetMethod(url + "/api/json");
-        int status = httpClient.executeMethod(method);
-        if (status == HttpStatus.SC_OK) {
-            InputStream is = method.getResponseBodyAsStream();
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.reader().readTree(is);
-        }
-        return null;
+	private JsonNode read(String url) throws IOException {
+		HttpClient httpClient = new HttpClient();
+		HttpMethod method = new GetMethod(url + "/api/json");
+		int status = httpClient.executeMethod(method);
+		if (status == HttpStatus.SC_OK) {
+			InputStream is = method.getResponseBodyAsStream();
+			ObjectMapper objectMapper = new ObjectMapper();
+			return objectMapper.reader().readTree(is);
+		}
+		return null;
 
-    }
+	}
 
-    public List<JobState> getJobStates(String url) throws IOException {
-        List<JobState> result = new ArrayList<JobState>();
-        JsonNode node = this.read(url);
-        if (node == null) {
-            LOGGER.warn("Cannot read job states from url '{}'", url);
-        } else {
-            JsonNode jobsNode = node.get("jobs");
-            if (jobsNode != null) {
-                for (JsonNode jobNode : jobsNode) {
-                    String jobName = jobNode.get("name").getTextValue();
-                    for (String filter : jobFilter) {
-                        if (Pattern.matches(filter, jobName)) {
-                            String jobUrl = jobNode.get("url").getTextValue();
-                            JsonNode lastBuildNode = this.read(jobUrl + "lastBuild");
-                            String buildState = lastBuildNode.get("result").getTextValue();
-                            JobState state = new JobState();
-                            state.setName(jobName);
-                            if (buildState != null) {
-                                state.setBuildState(BuildState.valueOf(buildState));
-                            } else {
-                                state.setBuildState(BuildState.UNKNOWN);
-                            }
-                            result.add(state);
-                        }
-                    }
-                }
-            }
-        }
-        return result;
-    }
+	public List<JobState> getJobStates(String url) throws IOException {
+		List<JobState> result = new ArrayList<JobState>();
+		JsonNode node = this.read(url);
+		if (node == null) {
+			LOGGER.warn("Cannot read job states from url '{}'", url);
+		} else {
+			JsonNode jobsNode = node.get("jobs");
+			if (jobsNode != null) {
+				for (JsonNode jobNode : jobsNode) {
+					String jobName = jobNode.get("name").getTextValue();
+					for (String filter : jobFilter) {
+						if (Pattern.matches(filter, jobName)) {
+							String jobUrl = jobNode.get("url").getTextValue();
+							JsonNode lastBuildNode = this.read(jobUrl
+									+ "lastBuild");
+							String buildState = lastBuildNode.get("result")
+									.getTextValue();
+							JobState state = new JobState();
+							state.setName(jobName);
+							if (buildState != null) {
+								state.setBuildState(BuildState
+										.valueOf(buildState));
+							} else {
+								state.setBuildState(BuildState.UNKNOWN);
+							}
+							result.add(state);
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
 
 }

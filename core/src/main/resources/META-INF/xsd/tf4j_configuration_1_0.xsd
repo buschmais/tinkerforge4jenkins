@@ -8,13 +8,13 @@
 
 	<xs:complexType name="ConfigurationType">
 		<xs:sequence>
-			<xs:element name="jenkins" type="tf4jconfig:JenkinsType" />
+			<xs:element name="jenkins" type="tf4jconfig:JenkinsConfigurationType" />
 			<xs:element name="bricklets" minOccurs="0">
 				<xs:complexType>
 					<xs:choice maxOccurs="unbounded" minOccurs="0">
-						<xs:element name="dualRelay" type="tf4jconfig:DualRelayType"
+						<xs:element name="dualRelay" type="tf4jconfig:DualRelayConfigurationType"
 							minOccurs="0" maxOccurs="unbounded" />
-						<xs:element name="lcd20x4" type="tf4jconfig:LCD20x4Type"
+						<xs:element name="lcd20x4" type="tf4jconfig:LCD20x4ConfigurationType"
 							minOccurs="0" maxOccurs="unbounded" />
 					</xs:choice>
 				</xs:complexType>
@@ -22,7 +22,7 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="JenkinsType">
+	<xs:complexType name="JenkinsConfigurationType">
 		<xs:sequence>
 			<xs:element name="url" type="xs:string" />
 			<xs:element name="update-interval">
@@ -35,7 +35,7 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="BrickletType" abstract="true">
+	<xs:complexType name="BrickletConfigurationType" abstract="true">
 		<xs:sequence>
 			<xs:element name="uid" type="xs:string" minOccurs="0" />
 		</xs:sequence>
@@ -47,9 +47,9 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="DualRelayType">
+	<xs:complexType name="DualRelayConfigurationType">
 		<xs:complexContent>
-			<xs:extension base="tf4jconfig:BrickletType">
+			<xs:extension base="tf4jconfig:BrickletConfigurationType">
 				<xs:sequence>
 					<xs:element name="port" type="tf4jconfig:DualRelayPortType"
 						maxOccurs="2" />
@@ -73,9 +73,9 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="LCD20x4Type">
+	<xs:complexType name="LCD20x4ConfigurationType">
 		<xs:complexContent>
-			<xs:extension base="tf4jconfig:BrickletType">
+			<xs:extension base="tf4jconfig:BrickletConfigurationType">
 				<xs:sequence>
 					<xs:element name="jobs" type="tf4jconfig:JobsType"
 						minOccurs="0" />
