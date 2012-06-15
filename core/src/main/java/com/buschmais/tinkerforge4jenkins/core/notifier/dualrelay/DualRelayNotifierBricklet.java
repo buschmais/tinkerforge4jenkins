@@ -1,14 +1,25 @@
 package com.buschmais.tinkerforge4jenkins.core.notifier.dualrelay;
 
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
-import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractDeviceNotifier;
+import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractNotifierDevice;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.DualRelayConfigurationType;
 import com.tinkerforge.BrickletDualRelay;
 
-public class DualRelayBrickletNotifier extends
-		AbstractDeviceNotifier<BrickletDualRelay, DualRelayConfigurationType> {
+/**
+ * Implementation of a notifier device for dual relay bricklets.
+ * 
+ * @author dirk.mahler
+ */
+public class DualRelayNotifierBricklet extends
+		AbstractNotifierDevice<BrickletDualRelay, DualRelayConfigurationType> {
 
-	public DualRelayBrickletNotifier(BrickletDualRelay brickletDualRelay) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param brickletDualRelay
+	 *            The {@link BrickletDualRelay} instance.
+	 */
+	public DualRelayNotifierBricklet(BrickletDualRelay brickletDualRelay) {
 		super(brickletDualRelay);
 	}
 

@@ -7,20 +7,39 @@ import org.slf4j.LoggerFactory;
 
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
-import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractDeviceNotifier;
+import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractNotifierDevice;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.LCD20X4ConfigurationType;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLCD20x4.ButtonPressedListener;
 import com.tinkerforge.IPConnection.TimeoutException;
 
-public class LCD20x4BrickletNotifier extends
-		AbstractDeviceNotifier<BrickletLCD20x4, LCD20X4ConfigurationType>
+/**
+ * Implementation of a notifier device for LCD 20x4 bricklets.
+ * 
+ * @author dirk.mahler
+ */
+public class LCD20x4NotifierBricklet extends
+		AbstractNotifierDevice<BrickletLCD20x4, LCD20X4ConfigurationType>
 		implements ButtonPressedListener {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(LCD20x4BrickletNotifier.class);
+	/**
+	 * The maximum number of rows that can be displayed.
+	 */
+	private static final int MAXIMUM_ROWS = 4;
 
-	public LCD20x4BrickletNotifier(BrickletLCD20x4 brickletLCD20x4) {
+	/**
+	 * The logger.
+	 */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(LCD20x4NotifierBricklet.class);
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param brickletLCD20x4
+	 *            The {@link BrickletLCD20x4} instance.
+	 */
+	public LCD20x4NotifierBricklet(BrickletLCD20x4 brickletLCD20x4) {
 		super(brickletLCD20x4);
 		brickletLCD20x4.addListener(this);
 	}
@@ -30,6 +49,13 @@ public class LCD20x4BrickletNotifier extends
 		return LCD20X4ConfigurationType.class;
 	}
 
+	/**
+	 * Switches the back light on or off.
+	 * 
+	 * @param state
+	 *            The new state, <code>true</code> indicates that the back light
+	 *            should be switched on.
+	 */
 	private void setBackLight(boolean state) {
 		try {
 			if (!getDevice().isBacklightOn() == state) {
@@ -60,7 +86,7 @@ public class LCD20x4BrickletNotifier extends
 			setBackLight(true);
 			Iterator<JobState> iterator = getJobStates().values().iterator();
 			int i = 0;
-			while (iterator.hasNext() && i < 4) {
+			while (iterator.hasNext() && i < MAXIMUM_ROWS) {
 				JobState summary = iterator.next();
 				if (!BuildState.SUCCESS.equals(summary.getBuildState())) {
 					char symbol;

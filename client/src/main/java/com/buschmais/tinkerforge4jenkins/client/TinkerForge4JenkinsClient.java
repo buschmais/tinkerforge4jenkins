@@ -23,25 +23,61 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import com.buschmais.tinkerforge4jenkins.core.DeviceNotifier;
-import com.buschmais.tinkerforge4jenkins.core.DeviceRegistry;
+import com.buschmais.tinkerforge4jenkins.core.NotifierDeviceRegistry;
+import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.ConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JenkinsConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.ObjectFactory;
 import com.tinkerforge.Device;
 
-public class TinkerForge4JenkinsClient {
+/**
+ * The main class for the TinkerForge4Jenkins client.
+ * <p>
+ * At startup it reads the configuration and initializes the
+ * {@link NotifierDeviceRegistry}.
+ * <p>
+ * 
+ * @author dirk.mahler
+ */
+public final class TinkerForge4JenkinsClient {
 
+	/**
+	 * The default Jenkins URL (e.g. if started using Winstone).
+	 */
+	private static final String JENKINS_DEFAULT_URL = "http://localhost:8080";
+
+	/**
+	 * The default Jenkins update interval in seconds.
+	 */
+	private static final int JENKINS_DEFAULT_UPDATE_INTERVAL = 30;
+
+	/**
+	 * The logger.
+	 */
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(TinkerForge4JenkinsClient.class);
 
+	/**
+	 * Private constructor.
+	 */
+	private TinkerForge4JenkinsClient() {
+	}
+
+	/**
+	 * The main method.
+	 * 
+	 * @param args
+	 *            The arguments. Currently only one optional argument specifying
+	 *            the name of the configuration file is supported.
+	 */
 	public static void main(String[] args) {
 		LOGGER.info("Starting TinkerForge4Jenkins Client.");
 		String configurationFileName = "tinkerforge4jenkins.xml";
 		if (args.length == 1) {
 			configurationFileName = args[0];
 		}
+		// Read the configuration.
 		ConfigurationType configuration = null;
 		try {
 			configuration = getConfiguration(configurationFileName);
@@ -52,31 +88,47 @@ public class TinkerForge4JenkinsClient {
 		} catch (SAXException e) {
 			logErrorAndExit("Cannot read configuration file.", e);
 		}
-		JenkinsConfigurationType jenkinsConfiguration = configuration
-				.getJenkins();
-		LOGGER.info("Polling '{}' with an interval of {}s.",
-				jenkinsConfiguration.getUrl(),
-				Integer.toString(jenkinsConfiguration.getUpdateInterval()));
-		DeviceRegistry deviceRegistry = new DeviceRegistry(
+		// Initialize the connection to the TinkerForge devices.
+		NotifierDeviceRegistry deviceRegistry = new NotifierDeviceRegistry(
 				configuration.getTinkerforge());
-		Collection<DeviceNotifier<? extends Device, ? extends BrickletConfigurationType>> notifiers = null;
+		Collection<NotifierDevice<? extends Device, ? extends BrickletConfigurationType>> notifiers = null;
 		try {
 			notifiers = deviceRegistry.start();
 		} catch (IOException e) {
 			logErrorAndExit("Cannot connect to devices.", e);
 		}
+		// Schedule Jenkins monitoring.
+		String url = JENKINS_DEFAULT_URL;
+		int updateInterval = JENKINS_DEFAULT_UPDATE_INTERVAL;
+		JenkinsConfigurationType jenkinsConfiguration = configuration
+				.getJenkins();
+		if (jenkinsConfiguration != null) {
+			url = jenkinsConfiguration.getUrl();
+			updateInterval = jenkinsConfiguration.getUpdateInterval();
+		}
+		LOGGER.info("Polling '{}' with an interval of {}s.", url,
+				Integer.toString(updateInterval));
 		ScheduledExecutorService scheduledExecutorService = Executors
 				.newScheduledThreadPool(1);
 		scheduledExecutorService.scheduleAtFixedRate(new StatusPublisher(
-				configuration.getJenkins(), notifiers), 0, jenkinsConfiguration
-				.getUpdateInterval(), TimeUnit.SECONDS);
+				new JenkinsHttpClient(jenkinsConfiguration), notifiers), 0,
+				updateInterval, TimeUnit.SECONDS);
 	}
 
-	private static void logErrorAndExit(String message, Throwable e) {
-		LOGGER.error(message, e);
-		System.exit(1);
-	}
-
+	/**
+	 * Read the configuration from the given file name.
+	 * 
+	 * @param fileName
+	 *            The file name.
+	 * @return The configuration.
+	 * @throws JAXBException
+	 *             If the configuration file cannot be unmarshalled (e.g.
+	 *             invalid XML).
+	 * @throws FileNotFoundException
+	 *             If the configuration file cannot be read.
+	 * @throws SAXException
+	 *             If the schema definition is invalid.
+	 */
 	private static ConfigurationType getConfiguration(String fileName)
 			throws JAXBException, FileNotFoundException, SAXException {
 		File file = new File(fileName);
@@ -93,4 +145,18 @@ public class TinkerForge4JenkinsClient {
 				new StreamSource(is), ConfigurationType.class);
 		return element.getValue();
 	}
+
+	/**
+	 * Log an error and exit.
+	 * 
+	 * @param message
+	 *            The error message.
+	 * @param e
+	 *            The {@link Throwable} to log.
+	 */
+	private static void logErrorAndExit(String message, Throwable e) {
+		LOGGER.error(message, e);
+		System.exit(1);
+	}
+
 }

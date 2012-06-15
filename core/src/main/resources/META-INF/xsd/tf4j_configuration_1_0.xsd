@@ -8,9 +8,10 @@
 
 	<xs:complexType name="ConfigurationType">
 		<xs:sequence>
-			<xs:element name="jenkins" type="tf4j-config:JenkinsConfigurationType" />
+			<xs:element name="jenkins" type="tf4j-config:JenkinsConfigurationType"
+				minOccurs="0" />
 			<xs:element name="tinkerforge"
-				type="tf4j-config:TinkerForgeConfigurationType" />
+				type="tf4j-config:TinkerForgeConfigurationType" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -22,7 +23,8 @@
 
 	<xs:complexType name="JenkinsConfigurationType">
 		<xs:sequence>
-			<xs:element name="url" type="xs:string" />
+			<xs:element name="url" type="xs:string" minOccurs="0"
+				default="http://localhost:8080/" />
 			<xs:element name="update-interval" minOccurs="0" default="30">
 				<xs:simpleType>
 					<xs:restriction base="xs:int">
@@ -30,7 +32,8 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
-			<xs:element name="jobs" type="tf4j-config:JobsType" />
+			<xs:element name="jobs" type="tf4j-config:JobsType"
+				minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
