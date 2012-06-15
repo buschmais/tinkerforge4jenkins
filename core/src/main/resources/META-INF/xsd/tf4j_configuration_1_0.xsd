@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:tf4jconfig="http://www.buschmais.com/TinkerForge4Jenkins/core/schema/configuration/v1.0"
+	xmlns:tf4j-config="http://www.buschmais.com/TinkerForge4Jenkins/core/schema/configuration/v1.0"
 	targetNamespace="http://www.buschmais.com/TinkerForge4Jenkins/core/schema/configuration/v1.0"
 	elementFormDefault="qualified">
 
-	<xs:element name="configuration" type="tf4jconfig:ConfigurationType" />
+	<xs:element name="configuration" type="tf4j-config:ConfigurationType" />
 
 	<xs:complexType name="ConfigurationType">
 		<xs:sequence>
-			<xs:element name="jenkins" type="tf4jconfig:JenkinsConfigurationType" />
-			<xs:element name="bricklets" minOccurs="0">
-				<xs:complexType>
-					<xs:choice maxOccurs="unbounded" minOccurs="0">
-						<xs:element name="dualRelay"
-							type="tf4jconfig:DualRelayConfigurationType" minOccurs="0"
-							maxOccurs="unbounded" />
-						<xs:element name="lcd20x4" type="tf4jconfig:LCD20x4ConfigurationType"
-							minOccurs="0" maxOccurs="unbounded" />
-					</xs:choice>
-				</xs:complexType>
-			</xs:element>
+			<xs:element name="jenkins" type="tf4j-config:JenkinsConfigurationType" />
+			<xs:element name="tinkerforge"
+				type="tf4j-config:TinkerForgeConfigurationType" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="JobsType">
+		<xs:sequence>
+			<xs:element name="job" type="xs:string" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -33,6 +30,31 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
+			<xs:element name="jobs" type="tf4j-config:JobsType" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="TinkerForgeConfigurationType">
+		<xs:sequence>
+			<xs:element name="connection" type="tf4j-config:ConnectionConfigurationType" />
+			<xs:element name="bricklets" minOccurs="0">
+				<xs:complexType>
+					<xs:choice maxOccurs="unbounded" minOccurs="0">
+						<xs:element name="dualRelay"
+							type="tf4j-config:DualRelayConfigurationType" minOccurs="0"
+							maxOccurs="unbounded" />
+						<xs:element name="lcd20x4" type="tf4j-config:LCD20x4ConfigurationType"
+							minOccurs="0" maxOccurs="unbounded" />
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ConnectionConfigurationType">
+		<xs:sequence>
+			<xs:element name="host" type="xs:string" default="localhost" />
+			<xs:element name="port" type="xs:int" default="4223" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -43,17 +65,11 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="JobsType">
-		<xs:sequence>
-			<xs:element name="job" type="xs:string" maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
-
 	<xs:complexType name="DualRelayConfigurationType">
 		<xs:complexContent>
-			<xs:extension base="tf4jconfig:BrickletConfigurationType">
+			<xs:extension base="tf4j-config:BrickletConfigurationType">
 				<xs:sequence>
-					<xs:element name="port" type="tf4jconfig:DualRelayPortType"
+					<xs:element name="port" type="tf4j-config:DualRelayPortType"
 						maxOccurs="2" />
 				</xs:sequence>
 			</xs:extension>
@@ -70,16 +86,16 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
-			<xs:element name="jobs" type="tf4jconfig:JobsType"
+			<xs:element name="jobs" type="tf4j-config:JobsType"
 				minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="LCD20x4ConfigurationType">
 		<xs:complexContent>
-			<xs:extension base="tf4jconfig:BrickletConfigurationType">
+			<xs:extension base="tf4j-config:BrickletConfigurationType">
 				<xs:sequence>
-					<xs:element name="jobs" type="tf4jconfig:JobsType"
+					<xs:element name="jobs" type="tf4j-config:JobsType"
 						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>

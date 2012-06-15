@@ -37,14 +37,16 @@ public abstract class AbstractDeviceNotifier<T extends Device, C extends Brickle
 	}
 
 	@Override
-	public void setConfiguration(C configuration) {
-		this.configuration = configuration;
+	public void setConfiguration(BrickletConfigurationType configuration) {
+		this.configuration = getConfigurationType().cast(configuration);
 	}
 
 	@Override
 	public C getConfiguration() {
 		return configuration;
 	}
+
+	protected abstract Class<C> getConfigurationType();
 
 	@Override
 	public void update(JobState state) {

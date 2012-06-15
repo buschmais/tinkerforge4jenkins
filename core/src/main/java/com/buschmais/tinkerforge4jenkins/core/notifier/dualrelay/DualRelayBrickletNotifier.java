@@ -13,6 +13,11 @@ public class DualRelayBrickletNotifier extends
 	}
 
 	@Override
+	protected Class<DualRelayConfigurationType> getConfigurationType() {
+		return DualRelayConfigurationType.class;
+	}
+
+	@Override
 	public void preUpdate() {
 	}
 

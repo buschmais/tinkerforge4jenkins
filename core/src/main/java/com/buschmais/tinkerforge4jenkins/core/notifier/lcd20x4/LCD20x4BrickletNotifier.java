@@ -25,6 +25,11 @@ public class LCD20x4BrickletNotifier extends
 		brickletLCD20x4.addListener(this);
 	}
 
+	@Override
+	protected Class<LCD20X4ConfigurationType> getConfigurationType() {
+		return LCD20X4ConfigurationType.class;
+	}
+
 	private void setBackLight(boolean state) {
 		try {
 			if (!getDevice().isBacklightOn() == state) {

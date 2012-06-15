@@ -15,7 +15,7 @@ public interface DeviceNotifier<T extends Device, C extends BrickletConfiguratio
 
 	T getDevice();
 
-	void setConfiguration(C configuration);
+	void setConfiguration(BrickletConfigurationType configuration);
 
 	BrickletConfigurationType getConfiguration();
 

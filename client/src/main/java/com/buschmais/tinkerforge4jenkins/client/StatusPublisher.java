@@ -1,5 +1,6 @@
 package com.buschmais.tinkerforge4jenkins.client;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -17,14 +18,15 @@ public class StatusPublisher implements Runnable {
 			.getLogger(StatusPublisher.class);
 
 	private JenkinsConfigurationType jenkinsConfiguration;
-	private List<DeviceNotifier<? extends Device, ? extends BrickletConfigurationType>> notifiers;
-	private JenkinsJsonClient jenkinsStatusReader = new JenkinsJsonClient();
+	private Collection<DeviceNotifier<? extends Device, ? extends BrickletConfigurationType>> notifiers;
+	private JenkinsJsonClient jenkinsStatusReader;
 
 	public StatusPublisher(
 			JenkinsConfigurationType jenkinsConfiguration,
-			List<DeviceNotifier<? extends Device, ? extends BrickletConfigurationType>> notifier) {
+			Collection<DeviceNotifier<? extends Device, ? extends BrickletConfigurationType>> notifier) {
 		this.jenkinsConfiguration = jenkinsConfiguration;
 		this.notifiers = notifier;
+		this.jenkinsStatusReader = new JenkinsJsonClient(jenkinsConfiguration);
 	}
 
 	@Override

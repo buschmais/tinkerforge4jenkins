@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -19,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JenkinsConfigurationType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JobsType;
 
 public class JenkinsJsonClient {
 
@@ -27,9 +28,13 @@ public class JenkinsJsonClient {
 
 	private Set<String> jobFilter = new HashSet<String>();
 
-	public JenkinsJsonClient() {
-		jobFilter.add("[a-zA-Z0-9]+_Continuous");
-		jobFilter.add("[a-zA-Z0-9]+_IntegrationTest");
+	public JenkinsJsonClient(JenkinsConfigurationType configuration) {
+		JobsType jobs = configuration.getJobs();
+		if (jobs != null) {
+			for (String job : jobs.getJob()) {
+				jobFilter.add(job);
+			}
+		}
 	}
 
 	private JsonNode read(String url) throws IOException {
@@ -42,7 +47,6 @@ public class JenkinsJsonClient {
 			return objectMapper.reader().readTree(is);
 		}
 		return null;
-
 	}
 
 	public List<JobState> getJobStates(String url) throws IOException {
@@ -56,7 +60,7 @@ public class JenkinsJsonClient {
 				for (JsonNode jobNode : jobsNode) {
 					String jobName = jobNode.get("name").getTextValue();
 					for (String filter : jobFilter) {
-						if (Pattern.matches(filter, jobName)) {
+						if (filter.equals(jobName)) {
 							String jobUrl = jobNode.get("url").getTextValue();
 							JsonNode lastBuildNode = this.read(jobUrl
 									+ "lastBuild");
