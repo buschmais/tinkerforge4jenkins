@@ -23,8 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import com.buschmais.tinkerforge4jenkins.core.NotifierDeviceRegistry;
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
+import com.buschmais.tinkerforge4jenkins.core.NotifierDeviceRegistry;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.ConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JenkinsConfigurationType;
@@ -102,10 +102,8 @@ public final class TinkerForge4JenkinsClient {
 		int updateInterval = JENKINS_DEFAULT_UPDATE_INTERVAL;
 		JenkinsConfigurationType jenkinsConfiguration = configuration
 				.getJenkins();
-		if (jenkinsConfiguration != null) {
-			url = jenkinsConfiguration.getUrl();
-			updateInterval = jenkinsConfiguration.getUpdateInterval();
-		}
+		url = jenkinsConfiguration.getUrl();
+		updateInterval = jenkinsConfiguration.getUpdateInterval();
 		LOGGER.info("Polling '{}' with an interval of {}s.", url,
 				Integer.toString(updateInterval));
 		ScheduledExecutorService scheduledExecutorService = Executors
