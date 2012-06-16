@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration
+	xmlns="http://www.buschmais.com/TinkerForge4Jenkins/core/schema/configuration/v1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<!--  Defines the connection parameters for the Jenkins server -->
+	<jenkins>
+		<url>http://localhost:9090/jenkins</url>
+		<update-interval>30</update-interval>
+		<!-- Optional job filter: jobs are identified by their name -->
+		<!-- 
+		<jobs>
+			<job>MyProject</job>
+		</jobs>
+		 -->
+	</jenkins>
+</configuration>
