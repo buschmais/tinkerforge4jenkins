@@ -82,6 +82,8 @@ public abstract class AbstractNotifierDevice<T extends Device, C extends Brickle
 
 	/**
 	 * Return the configuration type.
+	 * 
+	 * @return The type of the configuration.
 	 */
 	protected abstract Class<C> getConfigurationType();
 

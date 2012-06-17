@@ -31,6 +31,10 @@ public class NotifierDeviceRegistry {
 	 * @author dirk.mahler
 	 */
 	private final class EnumerateListenerImpl implements EnumerateListener {
+
+		/**
+		 * The ip connection.
+		 */
 		private final IPConnection ipcon;
 
 		/**

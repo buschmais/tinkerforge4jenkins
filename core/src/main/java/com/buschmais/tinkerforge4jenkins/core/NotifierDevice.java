@@ -54,6 +54,7 @@ public interface NotifierDevice<T extends Device, C extends BrickletConfiguratio
 	 * Indicates that there was a problem updating the job states from Jenkins.
 	 * 
 	 * @param message
+	 *            A message indicating the reason.
 	 */
 	void updateFailed(String message);
 

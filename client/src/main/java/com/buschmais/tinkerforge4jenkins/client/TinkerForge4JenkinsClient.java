@@ -86,7 +86,7 @@ public final class TinkerForge4JenkinsClient {
 		} catch (JAXBException e) {
 			logErrorAndExit("Cannot read configuration file.", e);
 		} catch (SAXException e) {
-			logErrorAndExit("Cannot read configuration file.", e);
+			logErrorAndExit("Cannot read configuration schema.", e);
 		}
 		// Initialize the connection to the TinkerForge devices.
 		NotifierDeviceRegistry deviceRegistry = new NotifierDeviceRegistry(
