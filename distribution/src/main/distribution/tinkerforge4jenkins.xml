@@ -2,11 +2,12 @@
 <configuration
 	xmlns="http://www.buschmais.com/TinkerForge4Jenkins/core/schema/configuration/v1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<!--  Defines the connection parameters for the Jenkins server -->
+	<!--  Connection parameters for the Jenkins server -->
 	<jenkins>
-		<url>http://localhost:9090/jenkins</url>
+		<!--  The URL of the Jenkins server -->
+		<url>http://localhost:8080/</url>
 		<update-interval>30</update-interval>
-		<!-- Optional job filter: jobs are identified by their name -->
+		<!-- Optional job filter: limit the number of monitored jobs -->
 		<!-- 
 		<jobs>
 			<job>MyProject</job>
