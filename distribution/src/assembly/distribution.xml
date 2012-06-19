@@ -12,7 +12,7 @@
 	</fileSets>
 	<dependencySets>
 		<dependencySet>
-			<outputDirectory>bin</outputDirectory>
+			<outputDirectory>/</outputDirectory>
 			<outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
 			<includes>
 				<include>com.buschmais.tinkerforge4jenkins:tinkerforge4jenkins-client:jar:shaded</include>
