@@ -108,8 +108,12 @@ public final class TinkerForge4JenkinsClient {
 				Integer.toString(updateInterval));
 		ScheduledExecutorService scheduledExecutorService = Executors
 				.newScheduledThreadPool(1);
-		scheduledExecutorService.scheduleAtFixedRate(new StatusPublisher(
-				new JenkinsHttpClient(jenkinsConfiguration), notifiers), 0,
+
+		PublisherTask publisherTask = new PublisherTask(new JenkinsHttpClient(
+				jenkinsConfiguration), notifiers);
+		publisherTask
+				.setUncaughtExceptionHandler(new PublisherTaskExceptionHandler());
+		scheduledExecutorService.scheduleAtFixedRate(publisherTask, 0,
 				updateInterval, TimeUnit.SECONDS);
 	}
 

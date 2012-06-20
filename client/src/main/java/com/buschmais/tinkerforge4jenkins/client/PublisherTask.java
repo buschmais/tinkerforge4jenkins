@@ -17,13 +17,13 @@ import com.tinkerforge.Device;
  * @author dirk.mahler
  * 
  */
-public class StatusPublisher implements Runnable {
+public class PublisherTask extends Thread {
 
 	/**
 	 * The logger.
 	 */
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(StatusPublisher.class);
+			.getLogger(PublisherTask.class);
 
 	/**
 	 * The collection of {@link NotifierDevice}s.
@@ -43,7 +43,7 @@ public class StatusPublisher implements Runnable {
 	 * @param notifierDevices
 	 *            The collection of {@link NotifierDevice}s.
 	 */
-	public StatusPublisher(
+	public PublisherTask(
 			JenkinsHttpClient jenkinsHttpClient,
 			Collection<NotifierDevice<? extends Device, ? extends BrickletConfigurationType>> notifierDevices) {
 		this.notifierDevices = notifierDevices;
@@ -78,5 +78,4 @@ public class StatusPublisher implements Runnable {
 			notifierDevice.postUpdate();
 		}
 	}
-
 }

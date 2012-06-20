@@ -1,5 +1,6 @@
 package com.buschmais.tinkerforge4jenkins.core.notifier.lcd20x4;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.slf4j.Logger;
@@ -44,11 +45,6 @@ public class LCD20x4NotifierBricklet extends
 		brickletLCD20x4.addListener(this);
 	}
 
-	@Override
-	protected Class<LCD20X4ConfigurationType> getConfigurationType() {
-		return LCD20X4ConfigurationType.class;
-	}
-
 	/**
 	 * Switches the back light on or off.
 	 * 
@@ -84,7 +80,12 @@ public class LCD20x4NotifierBricklet extends
 			setBackLight(false);
 		} else {
 			setBackLight(true);
-			Iterator<JobState> iterator = getJobStates().values().iterator();
+			Collection<JobState> jobs = getJobStates().values();
+			LCD20X4ConfigurationType configuration = getConfiguration();
+			if (configuration != null) {
+				jobs = filter(jobs, configuration.getJobs());
+			}
+			Iterator<JobState> iterator = jobs.iterator();
 			int i = 0;
 			while (iterator.hasNext() && i < MAXIMUM_ROWS) {
 				JobState summary = iterator.next();

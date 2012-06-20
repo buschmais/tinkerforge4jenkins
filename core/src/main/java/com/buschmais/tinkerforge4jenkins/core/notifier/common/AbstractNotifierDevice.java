@@ -1,5 +1,7 @@
 package com.buschmais.tinkerforge4jenkins.core.notifier.common;
 
+import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,6 +13,7 @@ import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JobsType;
 import com.tinkerforge.Device;
 
 /**
@@ -65,9 +68,13 @@ public abstract class AbstractNotifierDevice<T extends Device, C extends Brickle
 		return device;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void setConfiguration(BrickletConfigurationType configuration) {
-		this.configuration = getConfigurationType().cast(configuration);
+		ParameterizedType type = (ParameterizedType) this.getClass()
+				.getGenericSuperclass();
+		Class<C> configurationType = (Class<C>) type.getActualTypeArguments()[1];
+		this.configuration = configurationType.cast(configuration);
 	}
 
 	@Override
@@ -79,13 +86,6 @@ public abstract class AbstractNotifierDevice<T extends Device, C extends Brickle
 		}
 		jobStatesByBuildState.get(state.getBuildState()).add(state);
 	}
-
-	/**
-	 * Return the configuration type.
-	 * 
-	 * @return The type of the configuration.
-	 */
-	protected abstract Class<C> getConfigurationType();
 
 	/**
 	 * Return the configuration.
@@ -115,5 +115,29 @@ public abstract class AbstractNotifierDevice<T extends Device, C extends Brickle
 	 */
 	public Set<JobState> getJobsByBuildState(BuildState buildState) {
 		return jobStatesByBuildState.get(buildState);
+	}
+
+	/**
+	 * Filters a collection of jobs using a filter.
+	 * 
+	 * @param jobs
+	 *            The collection of {@link JobState}s.
+	 * @param filter
+	 *            The filter, represented by a {@link JobsType}. This parameter
+	 *            is optional (may be <code>null</code>).
+	 * @return The set of filtered {@link JobState}s.
+	 */
+	public Set<JobState> filter(Collection<JobState> jobs, JobsType filter) {
+		Set<String> filterSet = new HashSet<String>();
+		if (filter != null) {
+			filterSet.addAll(filter.getJob());
+		}
+		Set<JobState> filteredJobs = new HashSet<JobState>();
+		for (JobState job : jobs) {
+			if (filterSet.contains(job.getName())) {
+				filteredJobs.add(job);
+			}
+		}
+		return filteredJobs;
 	}
 }

@@ -39,7 +39,8 @@
 
 	<xs:complexType name="TinkerForgeConfigurationType">
 		<xs:sequence>
-			<xs:element name="connection" type="tf4j-config:ConnectionConfigurationType" />
+			<xs:element name="connection" type="tf4j-config:ConnectionConfigurationType"
+				minOccurs="0" />
 			<xs:element name="bricklets" minOccurs="0">
 				<xs:complexType>
 					<xs:choice maxOccurs="unbounded" minOccurs="0">
