@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
  */
 public class PublisherTaskExceptionHandler implements UncaughtExceptionHandler {
 
+	/**
+	 * Logger.
+	 */
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(PublisherTaskExceptionHandler.class);
 

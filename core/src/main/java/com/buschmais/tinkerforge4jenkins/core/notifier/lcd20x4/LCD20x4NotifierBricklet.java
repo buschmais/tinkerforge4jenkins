@@ -1,7 +1,7 @@
 package com.buschmais.tinkerforge4jenkins.core.notifier.lcd20x4;
 
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractNotifierDevice;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JobsType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.LCD20X4ConfigurationType;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLCD20x4.ButtonPressedListener;
@@ -75,43 +76,55 @@ public class LCD20x4NotifierBricklet extends
 	@Override
 	public void postUpdate() {
 		getDevice().clearDisplay();
-		if (getJobsByBuildState(BuildState.SUCCESS).size() == getJobStates()
-				.size()) {
+		LCD20X4ConfigurationType configuration = getConfiguration();
+		JobsType filter = null;
+		if (configuration != null) {
+			filter = configuration.getJobs();
+		}
+		Set<JobState> allJobs = filter(getJobStates().values(), filter);
+		Set<JobState> successfulJobs = filter(
+				getJobsByBuildState(BuildState.SUCCESS), filter);
+		if (successfulJobs.size() == allJobs.size()) {
 			setBackLight(false);
 		} else {
+			writeJobStates(allJobs);
 			setBackLight(true);
-			Collection<JobState> jobs = getJobStates().values();
-			LCD20X4ConfigurationType configuration = getConfiguration();
-			if (configuration != null) {
-				jobs = filter(jobs, configuration.getJobs());
-			}
-			Iterator<JobState> iterator = jobs.iterator();
-			int i = 0;
-			while (iterator.hasNext() && i < MAXIMUM_ROWS) {
-				JobState summary = iterator.next();
-				if (!BuildState.SUCCESS.equals(summary.getBuildState())) {
-					char symbol;
-					switch (summary.getBuildState()) {
-					case ABORTED:
-						symbol = 'A';
-						break;
-					case NOT_BUILT:
-						symbol = 'N';
-						break;
-					case UNSTABLE:
-						symbol = 'U';
-						break;
-					case FAILURE:
-						symbol = 'F';
-						break;
-					case UNKNOWN:
-					default:
-						symbol = '?';
-					}
-					String statusLine = symbol + " " + summary.getName();
-					getDevice().writeLine((short) i, (short) 0, statusLine);
-					i++;
+		}
+	}
+
+	/**
+	 * Writes the (non-successful) state of the given jobs to the LCD bricklet.
+	 * 
+	 * @param jobs
+	 *            The {@link JobState}s.
+	 */
+	private void writeJobStates(Set<JobState> jobs) {
+		Iterator<JobState> iterator = jobs.iterator();
+		int i = 0;
+		while (iterator.hasNext() && i < MAXIMUM_ROWS) {
+			JobState summary = iterator.next();
+			if (!BuildState.SUCCESS.equals(summary.getBuildState())) {
+				char symbol;
+				switch (summary.getBuildState()) {
+				case ABORTED:
+					symbol = 'A';
+					break;
+				case NOT_BUILT:
+					symbol = 'N';
+					break;
+				case UNSTABLE:
+					symbol = 'U';
+					break;
+				case FAILURE:
+					symbol = 'F';
+					break;
+				case UNKNOWN:
+				default:
+					symbol = '?';
 				}
+				String statusLine = symbol + " " + summary.getName();
+				getDevice().writeLine((short) i, (short) 0, statusLine);
+				i++;
 			}
 		}
 	}

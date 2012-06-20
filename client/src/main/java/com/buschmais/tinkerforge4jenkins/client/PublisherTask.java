@@ -13,9 +13,10 @@ import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletCo
 import com.tinkerforge.Device;
 
 /**
+ * Scheduled task which polls the current state of a Jenkins server and
+ * publishes it to the connected bricklets.
  * 
  * @author dirk.mahler
- * 
  */
 public class PublisherTask extends Thread {
 
