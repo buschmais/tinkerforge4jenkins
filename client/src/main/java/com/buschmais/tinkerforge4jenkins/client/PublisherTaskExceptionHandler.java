@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link UncaughtExceptionHandler} implementation for the {@link PublisherTask}
+ * {@link UncaughtExceptionHandler} for the {@link PublisherTask} .
  * 
  * @author dirk.mahler
  */
