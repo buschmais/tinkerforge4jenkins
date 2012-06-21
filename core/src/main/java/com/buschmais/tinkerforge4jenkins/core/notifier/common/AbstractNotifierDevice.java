@@ -128,16 +128,17 @@ public abstract class AbstractNotifierDevice<T extends Device, C extends Brickle
 	 * @return The set of filtered {@link JobState}s.
 	 */
 	public Set<JobState> filter(Collection<JobState> jobs, JobsType filter) {
-		Set<String> filterSet = new HashSet<String>();
 		if (filter != null) {
+			Set<String> filterSet = new HashSet<String>();
 			filterSet.addAll(filter.getJob());
-		}
-		Set<JobState> filteredJobs = new HashSet<JobState>();
-		for (JobState job : jobs) {
-			if (filterSet.contains(job.getName())) {
-				filteredJobs.add(job);
+			Set<JobState> filteredJobs = new HashSet<JobState>();
+			for (JobState job : jobs) {
+				if (filterSet.contains(job.getName())) {
+					filteredJobs.add(job);
+				}
 			}
+			return filteredJobs;
 		}
-		return filteredJobs;
+		return new HashSet<JobState>(jobs);
 	}
 }
