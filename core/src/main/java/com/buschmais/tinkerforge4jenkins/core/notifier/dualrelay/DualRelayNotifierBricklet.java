@@ -44,7 +44,7 @@ public class DualRelayNotifierBricklet extends
 			}
 		}
 		Map<Integer, Boolean> relayStates = new HashMap<Integer, Boolean>();
-		for (int i = 0; i < 2; i++) {
+		for (int i = 1; i <= 2; i++) {
 			Set<JobState> jobs = new HashSet<JobState>();
 			jobs.addAll(getJobsByBuildState(BuildState.ABORTED));
 			jobs.addAll(getJobsByBuildState(BuildState.FAILURE));
@@ -58,8 +58,8 @@ public class DualRelayNotifierBricklet extends
 			relayStates.put(Integer.valueOf(i), Boolean.valueOf(relayState));
 		}
 		getDevice().setState(
-				relayStates.get(Integer.valueOf(0)).booleanValue(),
-				relayStates.get(Integer.valueOf(1)).booleanValue());
+				relayStates.get(Integer.valueOf(1)).booleanValue(),
+				relayStates.get(Integer.valueOf(2)).booleanValue());
 	}
 
 	@Override

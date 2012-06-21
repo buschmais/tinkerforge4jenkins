@@ -8,6 +8,9 @@ import org.junit.Test;
 
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.notifier.dualrelay.DualRelayNotifierBricklet;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.DualRelayConfigurationType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.DualRelayPortType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JobsType;
 import com.buschmais.tinkerforge4jenkins.core.test.mock.BrickletDualRelayMock;
 import com.buschmais.tinkerforge4jenkins.core.test.util.JobStateBuilder;
 import com.tinkerforge.IPConnection.TimeoutException;
@@ -18,6 +21,8 @@ import com.tinkerforge.IPConnection.TimeoutException;
  * @author dirk.mahler
  */
 public class DualRelayBrickletNotifierTest {
+
+	private static final String UID = "000";
 
 	/**
 	 * The mock.
@@ -30,13 +35,21 @@ public class DualRelayBrickletNotifierTest {
 	private DualRelayNotifierBricklet notifier;
 
 	/**
+	 * The configuration.
+	 */
+	private DualRelayConfigurationType configuration;
+
+	/**
 	 * Initialize the {@link DualRelayNotifierBricklet} with the
 	 * {@link BrickletDualRelayMock}.
 	 */
 	@Before
 	public void createBricklet() throws TimeoutException {
-		mock = new BrickletDualRelayMock("000");
+		mock = new BrickletDualRelayMock(UID);
 		notifier = new DualRelayNotifierBricklet(mock);
+		configuration = new DualRelayConfigurationType();
+		configuration.setUid(UID);
+		notifier.setConfiguration(configuration);
 		assertFalse(mock.getState().relay1);
 		assertFalse(mock.getState().relay2);
 	}
@@ -73,15 +86,6 @@ public class DualRelayBrickletNotifierTest {
 	 *             If a timeout occurs.
 	 */
 	@Test
-	public void filter() throws TimeoutException {
-		verify(false, false, BuildState.SUCCESS, BuildState.UNKNOWN);
-	}
-
-	/**
-	 * @throws TimeoutException
-	 *             If a timeout occurs.
-	 */
-	@Test
 	public void oneBuildAborted() throws TimeoutException {
 		verify(true, true, BuildState.SUCCESS, BuildState.ABORTED);
 	}
@@ -102,6 +106,48 @@ public class DualRelayBrickletNotifierTest {
 	@Test
 	public void oneBuildUnstable() throws TimeoutException {
 		verify(true, true, BuildState.SUCCESS, BuildState.UNSTABLE);
+	}
+
+	/**
+	 * @throws TimeoutException
+	 *             If a timeout occurs.
+	 */
+	@Test
+	public void filterRelay1() throws TimeoutException {
+		addFilter(1, "0");
+		verify(false, true, BuildState.SUCCESS, BuildState.FAILURE);
+	}
+
+	/**
+	 * @throws TimeoutException
+	 *             If a timeout occurs.
+	 */
+	@Test
+	public void filterRelay2() throws TimeoutException {
+		addFilter(2, "0");
+		verify(true, false, BuildState.SUCCESS, BuildState.FAILURE);
+	}
+
+	/**
+	 * Add a job filter to a port.
+	 * 
+	 * @param port
+	 *            The port.
+	 * @param jobs
+	 *            The names of the jobs.
+	 */
+	private void addFilter(int port, String... jobs) {
+		DualRelayPortType portType = new DualRelayPortType();
+		portType.setId(port);
+		JobsType jobsType = portType.getJobs();
+		if (jobsType == null) {
+			jobsType = new JobsType();
+			portType.setJobs(jobsType);
+		}
+		for (String job : jobs) {
+			jobsType.getJob().add(job);
+		}
+		configuration.getPort().add(portType);
 	}
 
 	/**
