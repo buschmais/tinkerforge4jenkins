@@ -1,18 +1,16 @@
 package com.buschmais.tinkerforge4jenkins.core.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.notifier.dualrelay.DualRelayNotifierBricklet;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.DualRelayConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.DualRelayPortType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JobsType;
-import com.buschmais.tinkerforge4jenkins.core.test.mock.BrickletDualRelayMock;
 import com.buschmais.tinkerforge4jenkins.core.test.util.JobStateBuilder;
+import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.IPConnection.TimeoutException;
 
 /**
@@ -22,12 +20,20 @@ import com.tinkerforge.IPConnection.TimeoutException;
  */
 public class DualRelayBrickletNotifierTest {
 
+	/**
+	 * The name of the first job.
+	 */
+	private static final String JOBNAME_0 = "0";
+
+	/**
+	 * The device UID used for testing.
+	 */
 	private static final String UID = "000";
 
 	/**
 	 * The mock.
 	 */
-	private BrickletDualRelayMock mock;
+	private BrickletDualRelay mock;
 
 	/**
 	 * The notifier under test.
@@ -42,16 +48,17 @@ public class DualRelayBrickletNotifierTest {
 	/**
 	 * Initialize the {@link DualRelayNotifierBricklet} with the
 	 * {@link BrickletDualRelayMock}.
+	 * 
+	 * @throws TimeoutException
+	 *             If a timeout occurs.
 	 */
 	@Before
 	public void createBricklet() throws TimeoutException {
-		mock = new BrickletDualRelayMock(UID);
+		mock = Mockito.mock(BrickletDualRelay.class);
 		notifier = new DualRelayNotifierBricklet(mock);
 		configuration = new DualRelayConfigurationType();
 		configuration.setUid(UID);
 		notifier.setConfiguration(configuration);
-		assertFalse(mock.getState().relay1);
-		assertFalse(mock.getState().relay2);
 	}
 
 	/**
@@ -114,7 +121,7 @@ public class DualRelayBrickletNotifierTest {
 	 */
 	@Test
 	public void filterRelay1() throws TimeoutException {
-		addFilter(1, "0");
+		addFilter(1, JOBNAME_0);
 		verify(false, true, BuildState.SUCCESS, BuildState.FAILURE);
 	}
 
@@ -124,7 +131,7 @@ public class DualRelayBrickletNotifierTest {
 	 */
 	@Test
 	public void filterRelay2() throws TimeoutException {
-		addFilter(2, "0");
+		addFilter(2, JOBNAME_0);
 		verify(true, false, BuildState.SUCCESS, BuildState.FAILURE);
 	}
 
@@ -172,9 +179,6 @@ public class DualRelayBrickletNotifierTest {
 			i++;
 		}
 		notifier.postUpdate();
-		assertEquals(Boolean.valueOf(relay1),
-				Boolean.valueOf(mock.getState().relay1));
-		assertEquals(Boolean.valueOf(relay2),
-				Boolean.valueOf(mock.getState().relay2));
+		Mockito.verify(mock).setState(relay1, relay2);
 	}
 }
