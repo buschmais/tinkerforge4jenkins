@@ -1,7 +1,10 @@
 package com.buschmais.tinkerforge4jenkins.core.notifier.lcd20x4;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,12 +41,14 @@ public class LCD20x4NotifierBricklet extends
 	/**
 	 * Constructor.
 	 * 
-	 * @param brickletLCD20x4
+	 * @param uid
+	 *            The device uid.
+	 * @param bricklet
 	 *            The {@link BrickletLCD20x4} instance.
 	 */
-	public LCD20x4NotifierBricklet(BrickletLCD20x4 brickletLCD20x4) {
-		super(brickletLCD20x4);
-		brickletLCD20x4.addListener(this);
+	public LCD20x4NotifierBricklet(String uid, BrickletLCD20x4 bricklet) {
+		super(uid, bricklet);
+		getDevice().addListener(this);
 	}
 
 	/**
@@ -54,6 +59,7 @@ public class LCD20x4NotifierBricklet extends
 	 *            should be switched on.
 	 */
 	private void setBackLight(boolean state) {
+		LOGGER.debug("switching backlight: " + state);
 		try {
 			if (!getDevice().isBacklightOn() == state) {
 				if (state) {
@@ -69,12 +75,14 @@ public class LCD20x4NotifierBricklet extends
 
 	@Override
 	public void preUpdate() {
+		LOGGER.debug("clearing display before updating.");
 		getDevice().clearDisplay();
 		getDevice().writeLine((short) 0, (short) 0, "Updating status...");
 	}
 
 	@Override
 	public void postUpdate() {
+		LOGGER.debug("Clearing display before writing to device.");
 		getDevice().clearDisplay();
 		LCD20X4ConfigurationType configuration = getConfiguration();
 		JobsType filter = null;
@@ -85,6 +93,7 @@ public class LCD20x4NotifierBricklet extends
 		Set<JobState> successfulJobs = filter(
 				getJobsByBuildState(BuildState.SUCCESS), filter);
 		if (successfulJobs.size() == allJobs.size()) {
+			LOGGER.debug("No information to be written to device.");
 			setBackLight(false);
 		} else {
 			writeJobStates(allJobs);
@@ -99,7 +108,18 @@ public class LCD20x4NotifierBricklet extends
 	 *            The {@link JobState}s.
 	 */
 	private void writeJobStates(Set<JobState> jobs) {
-		Iterator<JobState> iterator = jobs.iterator();
+		LOGGER.debug("Writing job states to device.");
+		// Sort the jobs by the severity of their build state.
+		SortedSet<JobState> sortedJobs = new TreeSet<JobState>(
+				new Comparator<JobState>() {
+
+					@Override
+					public int compare(JobState o1, JobState o2) {
+						return o1.getBuildState().compareTo(o2.getBuildState());
+					}
+				});
+		sortedJobs.addAll(jobs);
+		Iterator<JobState> iterator = sortedJobs.iterator();
 		int i = 0;
 		while (iterator.hasNext() && i < MAXIMUM_ROWS) {
 			JobState summary = iterator.next();

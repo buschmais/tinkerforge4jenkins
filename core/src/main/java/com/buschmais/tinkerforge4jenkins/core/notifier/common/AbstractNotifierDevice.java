@@ -9,6 +9,9 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
@@ -28,6 +31,17 @@ import com.tinkerforge.Device;
  */
 public abstract class AbstractNotifierDevice<T extends Device, C extends BrickletConfigurationType>
 		implements NotifierDevice<T, C> {
+
+	/**
+	 * The logger.
+	 */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(AbstractNotifierDevice.class);
+
+	/**
+	 * The uid of the TinkerForge device.
+	 */
+	private String uid;
 
 	/**
 	 * The TinkerForge device.
@@ -53,10 +67,13 @@ public abstract class AbstractNotifierDevice<T extends Device, C extends Brickle
 	/**
 	 * Constructs the {@link AbstractNotifierDevice}.
 	 * 
+	 * @param uid
+	 *            The uid of the device.
 	 * @param device
 	 *            The TinkerForge device.
 	 */
-	protected AbstractNotifierDevice(T device) {
+	protected AbstractNotifierDevice(String uid, T device) {
+		this.uid = uid;
 		this.device = device;
 		for (BuildState buildState : BuildState.values()) {
 			jobStatesByBuildState.put(buildState, new HashSet<JobState>());
@@ -79,6 +96,7 @@ public abstract class AbstractNotifierDevice<T extends Device, C extends Brickle
 
 	@Override
 	public void update(JobState state) {
+		LOGGER.debug("Updating status of notifier " + this);
 		JobState previousState = jobStates.put(state.getName(), state);
 		if (previousState != null) {
 			jobStatesByBuildState.get(previousState.getBuildState()).remove(
@@ -140,5 +158,10 @@ public abstract class AbstractNotifierDevice<T extends Device, C extends Brickle
 			return filteredJobs;
 		}
 		return new HashSet<JobState>(jobs);
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getName() + "[" + uid + "]";
 	}
 }

@@ -16,7 +16,7 @@ public class DualRelayNotifierBrickletFactory extends
 	@Override
 	public NotifierDevice<BrickletDualRelay, DualRelayConfigurationType> create(
 			String uid) {
-		return new DualRelayNotifierBricklet(new BrickletDualRelay(uid));
+		return new DualRelayNotifierBricklet(uid, new BrickletDualRelay(uid));
 	}
 
 	@Override

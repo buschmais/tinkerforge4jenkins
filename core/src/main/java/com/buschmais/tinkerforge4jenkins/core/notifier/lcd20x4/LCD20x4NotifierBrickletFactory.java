@@ -16,7 +16,7 @@ public class LCD20x4NotifierBrickletFactory extends
 	@Override
 	public NotifierDevice<BrickletLCD20x4, LCD20X4ConfigurationType> create(
 			String uid) {
-		return new LCD20x4NotifierBricklet(new BrickletLCD20x4(uid));
+		return new LCD20x4NotifierBricklet(uid, new BrickletLCD20x4(uid));
 	}
 
 	@Override

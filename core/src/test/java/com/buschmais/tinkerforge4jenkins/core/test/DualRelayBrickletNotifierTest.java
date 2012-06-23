@@ -1,5 +1,8 @@
 package com.buschmais.tinkerforge4jenkins.core.test;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -18,17 +21,12 @@ import com.tinkerforge.IPConnection.TimeoutException;
  * 
  * @author dirk.mahler
  */
-public class DualRelayBrickletNotifierTest {
+public class DualRelayBrickletNotifierTest extends AbstractBrickletNotifierTest {
 
 	/**
 	 * The name of the first job.
 	 */
 	private static final String JOBNAME_0 = "0";
-
-	/**
-	 * The device UID used for testing.
-	 */
-	private static final String UID = "000";
 
 	/**
 	 * The mock.
@@ -46,8 +44,7 @@ public class DualRelayBrickletNotifierTest {
 	private DualRelayConfigurationType configuration;
 
 	/**
-	 * Initialize the {@link DualRelayNotifierBricklet} with the
-	 * {@link BrickletDualRelayMock}.
+	 * Initialize the {@link DualRelayNotifierBricklet}.
 	 * 
 	 * @throws TimeoutException
 	 *             If a timeout occurs.
@@ -55,7 +52,7 @@ public class DualRelayBrickletNotifierTest {
 	@Before
 	public void createBricklet() throws TimeoutException {
 		mock = Mockito.mock(BrickletDualRelay.class);
-		notifier = new DualRelayNotifierBricklet(mock);
+		notifier = new DualRelayNotifierBricklet(UID, mock);
 		configuration = new DualRelayConfigurationType();
 		configuration.setUid(UID);
 		notifier.setConfiguration(configuration);
@@ -67,7 +64,7 @@ public class DualRelayBrickletNotifierTest {
 	 */
 	@Test
 	public void allBuildsSuccessful() throws TimeoutException {
-		verify(false, false, BuildState.SUCCESS, BuildState.SUCCESS);
+		test(false, false, BuildState.SUCCESS, BuildState.SUCCESS);
 	}
 
 	/**
@@ -76,7 +73,7 @@ public class DualRelayBrickletNotifierTest {
 	 */
 	@Test
 	public void oneBuildNotBuilt() throws TimeoutException {
-		verify(false, false, BuildState.SUCCESS, BuildState.NOT_BUILT);
+		test(false, false, BuildState.SUCCESS, BuildState.NOT_BUILT);
 	}
 
 	/**
@@ -85,7 +82,7 @@ public class DualRelayBrickletNotifierTest {
 	 */
 	@Test
 	public void oneBuildUnknown() throws TimeoutException {
-		verify(false, false, BuildState.SUCCESS, BuildState.UNKNOWN);
+		test(false, false, BuildState.SUCCESS, BuildState.UNKNOWN);
 	}
 
 	/**
@@ -94,7 +91,7 @@ public class DualRelayBrickletNotifierTest {
 	 */
 	@Test
 	public void oneBuildAborted() throws TimeoutException {
-		verify(true, true, BuildState.SUCCESS, BuildState.ABORTED);
+		test(true, true, BuildState.SUCCESS, BuildState.ABORTED);
 	}
 
 	/**
@@ -103,7 +100,7 @@ public class DualRelayBrickletNotifierTest {
 	 */
 	@Test
 	public void oneBuildFailure() throws TimeoutException {
-		verify(true, true, BuildState.SUCCESS, BuildState.FAILURE);
+		test(true, true, BuildState.SUCCESS, BuildState.FAILURE);
 	}
 
 	/**
@@ -112,7 +109,7 @@ public class DualRelayBrickletNotifierTest {
 	 */
 	@Test
 	public void oneBuildUnstable() throws TimeoutException {
-		verify(true, true, BuildState.SUCCESS, BuildState.UNSTABLE);
+		test(true, true, BuildState.SUCCESS, BuildState.UNSTABLE);
 	}
 
 	/**
@@ -122,7 +119,7 @@ public class DualRelayBrickletNotifierTest {
 	@Test
 	public void filterRelay1() throws TimeoutException {
 		addFilter(1, JOBNAME_0);
-		verify(false, true, BuildState.SUCCESS, BuildState.FAILURE);
+		test(false, true, BuildState.SUCCESS, BuildState.FAILURE);
 	}
 
 	/**
@@ -132,7 +129,7 @@ public class DualRelayBrickletNotifierTest {
 	@Test
 	public void filterRelay2() throws TimeoutException {
 		addFilter(2, JOBNAME_0);
-		verify(true, false, BuildState.SUCCESS, BuildState.FAILURE);
+		test(true, false, BuildState.SUCCESS, BuildState.FAILURE);
 	}
 
 	/**
@@ -169,8 +166,8 @@ public class DualRelayBrickletNotifierTest {
 	 * @throws TimeoutException
 	 *             If a timeout occurs.
 	 */
-	private void verify(boolean relay1, boolean relay2,
-			BuildState... buildStates) throws TimeoutException {
+	private void test(boolean relay1, boolean relay2, BuildState... buildStates)
+			throws TimeoutException {
 		notifier.preUpdate();
 		int i = 0;
 		for (BuildState buildState : buildStates) {
@@ -179,6 +176,7 @@ public class DualRelayBrickletNotifierTest {
 			i++;
 		}
 		notifier.postUpdate();
-		Mockito.verify(mock).setState(relay1, relay2);
+		verify(mock).setState(relay1, relay2);
+		verifyNoMoreInteractions(mock);
 	}
 }

@@ -23,11 +23,13 @@ public class DualRelayNotifierBricklet extends
 	/**
 	 * Constructor.
 	 * 
-	 * @param brickletDualRelay
-	 *            The {@link BrickletDualRelay} instance.
+	 * @param uid
+	 *            The device uid.
+	 * @param The
+	 *            {@link BrickletDualRelay} instance.
 	 */
-	public DualRelayNotifierBricklet(BrickletDualRelay brickletDualRelay) {
-		super(brickletDualRelay);
+	public DualRelayNotifierBricklet(String uid, BrickletDualRelay bricklet) {
+		super(uid, bricklet);
 	}
 
 	@Override
