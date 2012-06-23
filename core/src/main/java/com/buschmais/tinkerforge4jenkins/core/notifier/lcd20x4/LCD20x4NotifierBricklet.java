@@ -1,5 +1,6 @@
 package com.buschmais.tinkerforge4jenkins.core.notifier.lcd20x4;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
@@ -28,9 +29,39 @@ public class LCD20x4NotifierBricklet extends
 		implements ButtonPressedListener {
 
 	/**
+	 * {@link Comparator} implementation comparing {@link JobState}s by severity
+	 * of their {@link BuildState}.
+	 * 
+	 * @author dirk.mahler
+	 */
+	private static class JobStateSeverityComparator implements
+			Comparator<JobState>, Serializable {
+		/**
+		 * The serial version UID.
+		 */
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public int compare(JobState o1, JobState o2) {
+			return o1.getBuildState().compareTo(o2.getBuildState());
+		}
+	}
+
+	/**
 	 * The maximum number of rows that can be displayed.
 	 */
 	private static final int MAXIMUM_ROWS = 4;
+
+	/**
+	 * The maximum number of columns that can be displayed.
+	 */
+	private static final int MAXIMUM_COLUMNS = 20;
+
+	/**
+	 * The suffix to use if displayed job names do not fit to the size of the
+	 * LCD.
+	 */
+	private static final String LONG_JOBNAME_SUFFIX = "...";
 
 	/**
 	 * The logger.
@@ -111,38 +142,15 @@ public class LCD20x4NotifierBricklet extends
 		LOGGER.debug("Writing job states to device.");
 		// Sort the jobs by the severity of their build state.
 		SortedSet<JobState> sortedJobs = new TreeSet<JobState>(
-				new Comparator<JobState>() {
-
-					@Override
-					public int compare(JobState o1, JobState o2) {
-						return o1.getBuildState().compareTo(o2.getBuildState());
-					}
-				});
+				new JobStateSeverityComparator());
 		sortedJobs.addAll(jobs);
 		Iterator<JobState> iterator = sortedJobs.iterator();
 		int i = 0;
 		while (iterator.hasNext() && i < MAXIMUM_ROWS) {
 			JobState summary = iterator.next();
 			if (!BuildState.SUCCESS.equals(summary.getBuildState())) {
-				char symbol;
-				switch (summary.getBuildState()) {
-				case ABORTED:
-					symbol = 'A';
-					break;
-				case NOT_BUILT:
-					symbol = 'N';
-					break;
-				case UNSTABLE:
-					symbol = 'U';
-					break;
-				case FAILURE:
-					symbol = 'F';
-					break;
-				case UNKNOWN:
-				default:
-					symbol = '?';
-				}
-				String statusLine = symbol + " " + summary.getName();
+				String statusLine = createStatusLine(summary.getName(),
+						summary.getBuildState());
 				getDevice().writeLine((short) i, (short) 0, statusLine);
 				i++;
 			}
@@ -159,5 +167,50 @@ public class LCD20x4NotifierBricklet extends
 
 	@Override
 	public void buttonPressed(short button) {
+	}
+
+	/**
+	 * Returns the status line to display on the {@link BrickletLCD20x4} for the
+	 * given job name and {@link BuildState}.
+	 * 
+	 * @param jobName
+	 *            The job name.
+	 * @param buildState
+	 *            The {@link BuildState}.
+	 * @return The message.
+	 */
+	public String createStatusLine(String jobName, BuildState buildState) {
+		String displayedJobName;
+		if (jobName.length() > MAXIMUM_COLUMNS - 2) {
+			displayedJobName = jobName.substring(0, MAXIMUM_COLUMNS
+					- LONG_JOBNAME_SUFFIX.length() - 2)
+					+ LONG_JOBNAME_SUFFIX;
+		} else {
+			displayedJobName = jobName;
+		}
+		return getBuildStateSymbol(buildState) + " " + displayedJobName;
+	}
+
+	/**
+	 * Returns the symbol to display for the given {@link BuildState}.
+	 * 
+	 * @param buildState
+	 *            The {@link BuildState}.
+	 * @return The symbol or '?' if the state is unknown.
+	 */
+	private char getBuildStateSymbol(BuildState buildState) {
+		switch (buildState) {
+		case ABORTED:
+			return 'A';
+		case NOT_BUILT:
+			return 'N';
+		case UNSTABLE:
+			return 'U';
+		case FAILURE:
+			return 'F';
+		case UNKNOWN:
+		default:
+			return '?';
+		}
 	}
 }

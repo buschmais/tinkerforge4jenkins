@@ -23,11 +23,13 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
 		</license>
 	</licenses>
+
 	<scm>
 		<connection>scm:git:git://github.com/DirkMahler/tinkerforge4jenkins.git</connection>
 		<developerConnection>scm:git:git@github.com:DirkMahler/tinkerforge4jenkins.git</developerConnection>
 		<url>https://github.com/DirkMahler/tinkerforge4jenkins</url>
 	</scm>
+
 	<developers>
 		<developer>
 			<id>dirk-mahler</id>
@@ -46,6 +48,10 @@
 			<url>http://download.java.net/maven/2/</url>
 		</repository>
 	</repositories>
+
+	<properties>
+		<org.slf4j_version>1.6.1</org.slf4j_version>
+	</properties>
 
 	<build>
 		<pluginManagement>
@@ -136,23 +142,23 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.6.1</version>
+				<version>${org.slf4j_version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>jcl-over-slf4j</artifactId>
-				<version>1.6.1</version>
+				<version>${org.slf4j_version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-				<version>1.6.1</version>
+				<version>${org.slf4j_version}</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-simple</artifactId>
-				<version>1.6.1</version>
+				<version>${org.slf4j_version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -165,6 +171,7 @@
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-core</artifactId>
 				<version>1.9.0</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

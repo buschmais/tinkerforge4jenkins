@@ -5,7 +5,7 @@ package com.buschmais.tinkerforge4jenkins.core.test;
  * 
  * @author dirk.mahler
  */
-public class AbstractBrickletNotifierTest {
+public abstract class AbstractBrickletNotifierTest {
 
 	/**
 	 * The device UID used for testing.

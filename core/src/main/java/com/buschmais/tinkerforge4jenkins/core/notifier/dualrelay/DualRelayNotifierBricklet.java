@@ -25,8 +25,8 @@ public class DualRelayNotifierBricklet extends
 	 * 
 	 * @param uid
 	 *            The device uid.
-	 * @param The
-	 *            {@link BrickletDualRelay} instance.
+	 * @param bricklet
+	 *            The {@link BrickletDualRelay} instance.
 	 */
 	public DualRelayNotifierBricklet(String uid, BrickletDualRelay bricklet) {
 		super(uid, bricklet);

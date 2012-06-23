@@ -31,6 +31,11 @@ import com.tinkerforge.IPConnection.TimeoutException;
 public class LCD20x4BrickletNotifierTest extends AbstractBrickletNotifierTest {
 
 	/**
+	 * The job name prefix.
+	 */
+	private static final String JOBNAME_PREFIX = "Job_";
+
+	/**
 	 * The mock.
 	 */
 	private BrickletLCD20x4 mock;
@@ -68,7 +73,7 @@ public class LCD20x4BrickletNotifierTest extends AbstractBrickletNotifierTest {
 		notifier.preUpdate();
 		verify(mock).writeLine((short) 0, (short) 0, "Updating status...");
 		verify(mock).clearDisplay();
-		notifier.update(JobStateBuilder.create("0", FAILURE));
+		notifier.update(JobStateBuilder.create(JOBNAME_PREFIX + "0", FAILURE));
 		verify(mock).clearDisplay();
 		notifier.postUpdate();
 		verify(mock, times(2)).clearDisplay();
@@ -98,7 +103,8 @@ public class LCD20x4BrickletNotifierTest extends AbstractBrickletNotifierTest {
 		update(SUCCESS, ABORTED);
 		verify(mock).backlightOn();
 		verify(mock, never()).backlightOff();
-		verify(mock).writeLine((short) 0, (short) 0, "A 1");
+		verify(mock).writeLine((short) 0, (short) 0,
+				notifier.createStatusLine(JOBNAME_PREFIX + "1", ABORTED));
 	}
 
 	/**
@@ -112,10 +118,14 @@ public class LCD20x4BrickletNotifierTest extends AbstractBrickletNotifierTest {
 		update(SUCCESS, UNKNOWN, NOT_BUILT, ABORTED, UNSTABLE, FAILURE);
 		verify(mock, atMost(1)).backlightOn();
 		verify(mock, never()).backlightOff();
-		verify(mock).writeLine((short) 0, (short) 0, "F 5");
-		verify(mock).writeLine((short) 1, (short) 0, "U 4");
-		verify(mock).writeLine((short) 2, (short) 0, "A 3");
-		verify(mock).writeLine((short) 3, (short) 0, "? 1");
+		verify(mock).writeLine((short) 0, (short) 0,
+				notifier.createStatusLine(JOBNAME_PREFIX + "5", FAILURE));
+		verify(mock).writeLine((short) 1, (short) 0,
+				notifier.createStatusLine(JOBNAME_PREFIX + "4", UNSTABLE));
+		verify(mock).writeLine((short) 2, (short) 0,
+				notifier.createStatusLine(JOBNAME_PREFIX + "3", ABORTED));
+		verify(mock).writeLine((short) 3, (short) 0,
+				notifier.createStatusLine(JOBNAME_PREFIX + "1", UNKNOWN));
 	}
 
 	/**
@@ -131,7 +141,8 @@ public class LCD20x4BrickletNotifierTest extends AbstractBrickletNotifierTest {
 		update(FAILURE);
 		verify(mock).backlightOn();
 		verify(mock, never()).backlightOff();
-		verify(mock).writeLine((short) 0, (short) 0, "F 0");
+		verify(mock).writeLine((short) 0, (short) 0,
+				notifier.createStatusLine(JOBNAME_PREFIX + "0", FAILURE));
 	}
 
 	/**
@@ -143,9 +154,10 @@ public class LCD20x4BrickletNotifierTest extends AbstractBrickletNotifierTest {
 	@Test
 	public void buildBecomesStable() throws TimeoutException {
 		update(UNSTABLE);
-		verify(mock).writeLine((short) 0, (short) 0, "U 0");
+		verify(mock).writeLine((short) 0, (short) 0,
+				notifier.createStatusLine(JOBNAME_PREFIX + "0", UNSTABLE));
 		verify(mock).backlightOn();
-		stub(mock.isBacklightOn()).toReturn(Boolean.valueOf(true));
+		stub(mock.isBacklightOn()).toReturn(Boolean.TRUE);
 		update(SUCCESS);
 		verify(mock, times(4)).clearDisplay();
 		verify(mock).backlightOff();
@@ -163,10 +175,11 @@ public class LCD20x4BrickletNotifierTest extends AbstractBrickletNotifierTest {
 		notifier.preUpdate();
 		int i = 0;
 		for (BuildState buildState : buildStates) {
-			notifier.update(JobStateBuilder.create(Integer.toString(i),
-					buildState));
+			notifier.update(JobStateBuilder.create(
+					JOBNAME_PREFIX + Integer.toString(i), buildState));
 			i++;
 		}
 		notifier.postUpdate();
 	}
+
 }
