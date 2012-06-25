@@ -42,7 +42,7 @@ public class JenkinsHttpClient {
 	private JenkinsConfigurationType configuration;
 
 	/**
-	 * The Jackson {@link ObjectMapper}
+	 * The Jackson {@link ObjectMapper}.
 	 */
 	private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -56,6 +56,8 @@ public class JenkinsHttpClient {
 	 * 
 	 * @param configuration
 	 *            The {@link JenkinsConfigurationType}.
+	 * @param httpClient
+	 *            The {@link HttpClient}.
 	 */
 	public JenkinsHttpClient(JenkinsConfigurationType configuration,
 			HttpClient httpClient) {
