@@ -19,6 +19,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -110,7 +111,7 @@ public final class TinkerForge4JenkinsClient {
 				.newScheduledThreadPool(1);
 
 		PublisherTask publisherTask = new PublisherTask(new JenkinsHttpClient(
-				jenkinsConfiguration), notifiers);
+				jenkinsConfiguration, new DefaultHttpClient()), notifiers);
 		publisherTask
 				.setUncaughtExceptionHandler(new PublisherTaskExceptionHandler());
 		scheduledExecutorService.scheduleAtFixedRate(publisherTask, 0,

@@ -1,16 +1,15 @@
 package com.buschmais.tinkerforge4jenkins.client;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -43,13 +42,25 @@ public class JenkinsHttpClient {
 	private JenkinsConfigurationType configuration;
 
 	/**
+	 * The Jackson {@link ObjectMapper}
+	 */
+	private ObjectMapper objectMapper = new ObjectMapper();
+
+	/**
+	 * The HTTP client.
+	 */
+	private HttpClient httpClient;
+
+	/**
 	 * Constructor.
 	 * 
 	 * @param configuration
 	 *            The {@link JenkinsConfigurationType}.
 	 */
-	public JenkinsHttpClient(JenkinsConfigurationType configuration) {
+	public JenkinsHttpClient(JenkinsConfigurationType configuration,
+			HttpClient httpClient) {
 		this.configuration = configuration;
+		this.httpClient = httpClient;
 		JobsType jobs = configuration.getJobs();
 		if (jobs != null) {
 			jobFilter = new HashSet<String>();
@@ -69,15 +80,10 @@ public class JenkinsHttpClient {
 	 *             If reading the URL fails.
 	 */
 	private JsonNode readJsonNode(String baseUrl) throws IOException {
-		HttpClient httpClient = new HttpClient();
-		HttpMethod method = new GetMethod(baseUrl + "/api/json");
-		int status = httpClient.executeMethod(method);
-		if (status == HttpStatus.SC_OK) {
-			InputStream is = method.getResponseBodyAsStream();
-			ObjectMapper objectMapper = new ObjectMapper();
-			return objectMapper.reader().readTree(is);
-		}
-		return null;
+		HttpGet httpget = new HttpGet(baseUrl + "/api/json");
+		ResponseHandler<String> responseHandler = new BasicResponseHandler();
+		String responseBody = httpClient.execute(httpget, responseHandler);
+		return objectMapper.reader().readTree(responseBody);
 	}
 
 	/**

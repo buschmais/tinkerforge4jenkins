@@ -1,0 +1,48 @@
+{
+	"actions": [{
+		"causes": [{
+			"shortDescription": "Gestartet durch Benutzer anonymous",
+			"userId": null,
+			"userName": "anonymous"
+		}]
+	},
+	{
+		
+	},
+	{
+		
+	},
+	{
+		"failCount": 0,
+		"skipCount": 0,
+		"totalCount": 4,
+		"urlName": "testReport"
+	},
+	{
+		
+	},
+	{
+		
+	}],
+	"artifacts": [],
+	"building": false,
+	"description": null,
+	"duration": 10234,
+	"fullDisplayName": "Job5 #1",
+	"id": "2012-06-22_20-40-07",
+	"keepLog": false,
+	"number": 1,
+	"result": "NOT_BUILT",
+	"timestamp": 1340390407000,
+	"url": "http://localhost:8080/job/Job5/1/",
+	"builtOn": "",
+	"changeSet": {
+		"items": [],
+		"kind": "fs_scm"
+	},
+	"culprits": [],
+	"mavenArtifacts": {
+		
+	},
+	"mavenVersionUsed": "3.0.4"
+}

@@ -1,0 +1,55 @@
+{
+	"assignedLabels": [{
+		
+	}],
+	"mode": "NORMAL",
+	"nodeDescription": "Jenkins Master-Knoten",
+	"nodeName": "",
+	"numExecutors": 2,
+	"description": null,
+	"jobs": [{
+		"name": "Job1",
+		"url": "http://localhost:8080/job/Job1/",
+		"color": "blue"
+	},
+	{
+		"name": "Job2",
+		"url": "http://localhost:8080/job/Job2/",
+		"color": "blue"
+	},
+	{
+		"name": "Job3",
+		"url": "http://localhost:8080/job/Job3/",
+		"color": "blue"
+	},
+	{
+		"name": "Job4",
+		"url": "http://localhost:8080/job/Job4/",
+		"color": "blue"
+	},
+	{
+		"name": "Job5",
+		"url": "http://localhost:8080/job/Job5/",
+		"color": "blue"
+	},
+	{
+		"name": "Job6",
+		"url": "http://localhost:8080/job/Job6/",
+		"color": "blue"
+	}],
+	"overallLoad": {
+		
+	},
+	"primaryView": {
+		"name": "Alle",
+		"url": "http://localhost:8080/jenkins/"
+	},
+	"quietingDown": false,
+	"slaveAgentPort": 0,
+	"useCrumbs": false,
+	"useSecurity": false,
+	"views": [{
+		"name": "Alle",
+		"url": "http://localhost:9090/jenkins/"
+	}]
+}
