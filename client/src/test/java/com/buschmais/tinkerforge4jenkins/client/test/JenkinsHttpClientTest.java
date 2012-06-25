@@ -6,6 +6,7 @@ import static com.buschmais.tinkerforge4jenkins.core.BuildState.NOT_BUILT;
 import static com.buschmais.tinkerforge4jenkins.core.BuildState.SUCCESS;
 import static com.buschmais.tinkerforge4jenkins.core.BuildState.UNKNOWN;
 import static com.buschmais.tinkerforge4jenkins.core.BuildState.UNSTABLE;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,6 +29,7 @@ import com.buschmais.tinkerforge4jenkins.client.JenkinsHttpClient;
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JenkinsConfigurationType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JobsType;
 
 /**
  * Tests for the Jenkins HTTP client.
@@ -63,6 +65,7 @@ public class JenkinsHttpClientTest {
 				get("lastBuild5_NOT_BUILT.json"),
 				get("lastBuild6_UNKNOWN.json"));
 		List<JobState> jobStates = jenkinsHttpClient.getJobStates();
+		assertEquals(6, jobStates.size());
 		Map<String, BuildState> expectedStates = new HashMap<String, BuildState>();
 		expectedStates.put("Job1", SUCCESS);
 		expectedStates.put("Job2", FAILURE);
@@ -70,6 +73,35 @@ public class JenkinsHttpClientTest {
 		expectedStates.put("Job4", ABORTED);
 		expectedStates.put("Job5", NOT_BUILT);
 		expectedStates.put("Job6", UNKNOWN);
+		for (JobState jobState : jobStates) {
+			Assert.assertEquals(jobState.getBuildState(),
+					expectedStates.get(jobState.getName()));
+		}
+	}
+
+	/**
+	 * Get filtered jobs and retrieve the state of the last build.
+	 * 
+	 * @throws IOException
+	 *             If the test fails.
+	 */
+	@Test
+	@SuppressWarnings("unchecked")
+	public void lastBuildsWithFilter() throws IOException {
+		JenkinsConfigurationType configuration = new JenkinsConfigurationType();
+		JobsType jobsType = new JobsType();
+		jobsType.getJob().add("Job1");
+		configuration.setJobs(jobsType);
+		JenkinsHttpClient jenkinsHttpClient = new JenkinsHttpClient(
+				configuration, httpClientMock);
+		when(
+				httpClientMock.execute(any(HttpGet.class),
+						any(ResponseHandler.class))).thenReturn(
+				get("jobs.json"), get("lastBuild1_SUCCESS.json"));
+		List<JobState> jobStates = jenkinsHttpClient.getJobStates();
+		assertEquals(1, jobStates.size());
+		Map<String, BuildState> expectedStates = new HashMap<String, BuildState>();
+		expectedStates.put("Job1", SUCCESS);
 		for (JobState jobState : jobStates) {
 			Assert.assertEquals(jobState.getBuildState(),
 					expectedStates.get(jobState.getName()));
