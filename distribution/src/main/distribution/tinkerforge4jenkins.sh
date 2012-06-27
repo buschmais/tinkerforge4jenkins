@@ -1,3 +1,3 @@
 #!/bin/bash
-SET BASEDIR=%~dp0%
-java -jar %BASEDIR%\tinkerforge4jenkins-client.jar %*
+BASEDIR=$(dirname $0)
+java -jar $BASEDIR/tinkerforge4jenkins-client.jar $*
