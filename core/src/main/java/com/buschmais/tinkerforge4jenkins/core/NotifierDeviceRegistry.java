@@ -30,7 +30,8 @@ public class NotifierDeviceRegistry {
 	 * 
 	 * @author dirk.mahler
 	 */
-	private final class EnumerateListenerImpl implements EnumerateListener {
+	private final class NotifierDeviceEnumerateListener implements
+			EnumerateListener {
 
 		/**
 		 * The ip connection.
@@ -43,7 +44,7 @@ public class NotifierDeviceRegistry {
 		 * @param ipConnection
 		 *            The ip connection to the TinkerForge devices.
 		 */
-		private EnumerateListenerImpl(IPConnection ipConnection) {
+		private NotifierDeviceEnumerateListener(IPConnection ipConnection) {
 			this.ipcon = ipConnection;
 		}
 
@@ -141,7 +142,7 @@ public class NotifierDeviceRegistry {
 	}
 
 	/**
-	 * Starts the registry and returns the collection of active devices.
+	 * Starts the registry and returns the collection of connected devices.
 	 * <p>
 	 * The collection is updated if devices are added or removed (plug and
 	 * play).
@@ -168,7 +169,7 @@ public class NotifierDeviceRegistry {
 		// Create the IP connection
 		final IPConnection ipcon = new IPConnection(host, port);
 		// Use the enumeration listener for device management.
-		ipcon.enumerate(new EnumerateListenerImpl(ipcon));
+		ipcon.enumerate(new NotifierDeviceEnumerateListener(ipcon));
 		return notifierDevices.values();
 	}
 
