@@ -1,4 +1,4 @@
-package com.buschmais.tinkerforge4jenkins.core.test.util;
+package com.buschmais.tinkerforge4jenkins.core.util;
 
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
@@ -8,7 +8,7 @@ import com.buschmais.tinkerforge4jenkins.core.JobState;
  * 
  * @author dirk.mahler
  */
-public class JobStateBuilder {
+public final class JobStateBuilder {
 
 	/**
 	 * Private constructor.
@@ -32,4 +32,16 @@ public class JobStateBuilder {
 		return jobState;
 	}
 
+	/**
+	 * Creates a {@link JobState} instance.
+	 * 
+	 * @param name
+	 *            The name of the job.
+	 * @param buildState
+	 *            The string representing the {@link BuildState} of the job.
+	 * @return The {@link JobState} instance.
+	 */
+	public static JobState create(String name, String buildState) {
+		return create(name, BuildState.valueOf(buildState));
+	}
 }

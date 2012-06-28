@@ -19,6 +19,7 @@ import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JenkinsConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JobsType;
+import com.buschmais.tinkerforge4jenkins.core.util.JobStateBuilder;
 
 /**
  * HTTP client for Jenkins servers.
@@ -113,12 +114,12 @@ public class JenkinsHttpClient {
 								+ "lastBuild");
 						String buildState = lastBuildNode.get("result")
 								.getTextValue();
-						JobState state = new JobState();
-						state.setName(jobName);
+						JobState state;
 						if (buildState != null) {
-							state.setBuildState(BuildState.valueOf(buildState));
+							state = JobStateBuilder.create(jobName, buildState);
 						} else {
-							state.setBuildState(BuildState.UNKNOWN);
+							state = JobStateBuilder.create(jobName,
+									BuildState.UNKNOWN);
 						}
 						result.add(state);
 					}

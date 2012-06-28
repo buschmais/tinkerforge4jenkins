@@ -12,7 +12,7 @@ import com.buschmais.tinkerforge4jenkins.core.notifier.dualrelay.DualRelayNotifi
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.DualRelayConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.DualRelayPortType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JobsType;
-import com.buschmais.tinkerforge4jenkins.core.test.util.JobStateBuilder;
+import com.buschmais.tinkerforge4jenkins.core.util.JobStateBuilder;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.IPConnection.TimeoutException;
 
