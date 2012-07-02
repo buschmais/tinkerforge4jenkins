@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
-import com.buschmais.tinkerforge4jenkins.core.NotifierDeviceRegistry;
+import com.buschmais.tinkerforge4jenkins.core.registry.NotifierDeviceRegistry;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.ConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JenkinsConfigurationType;
