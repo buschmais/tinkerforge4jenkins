@@ -73,6 +73,7 @@ public class NotifierDeviceEnumerateListenerTest {
 	/**
 	 * The {@link NotifierDevice}.
 	 */
+	@SuppressWarnings("rawtypes")
 	private NotifierDevice notifierDevice;
 
 	/**
@@ -119,11 +120,13 @@ public class NotifierDeviceEnumerateListenerTest {
 	public void addNotifierWithoutConfiguration() throws TimeoutException {
 		listener = new NotifierDeviceEnumerateListener(ipConnection,
 				serviceLoader, null);
-		listener.enumerate(MOCKDEVICE_UID, MOCKDEVICE_IDENTIFIER, (short) 0, true);
+		listener.enumerate(MOCKDEVICE_UID, MOCKDEVICE_IDENTIFIER, (short) 0,
+				true);
 
 		verify(ipConnection).addDevice(bricklet);
 		assertEquals(1, listener.getNotifierDevices().size());
-		assertEquals(notifierDevice, listener.getNotifierDevices().get(MOCKDEVICE_UID));
+		assertEquals(notifierDevice,
+				listener.getNotifierDevices().get(MOCKDEVICE_UID));
 	}
 
 	/**
@@ -141,12 +144,14 @@ public class NotifierDeviceEnumerateListenerTest {
 
 		listener = new NotifierDeviceEnumerateListener(ipConnection,
 				serviceLoader, configuration);
-		listener.enumerate(MOCKDEVICE_UID, MOCKDEVICE_IDENTIFIER, (short) 0, true);
+		listener.enumerate(MOCKDEVICE_UID, MOCKDEVICE_IDENTIFIER, (short) 0,
+				true);
 
 		verify(notifierDevice).setConfiguration(brickletConfiguration);
 		verify(ipConnection).addDevice(bricklet);
 		assertEquals(1, listener.getNotifierDevices().size());
-		assertEquals(notifierDevice, listener.getNotifierDevices().get(MOCKDEVICE_UID));
+		assertEquals(notifierDevice,
+				listener.getNotifierDevices().get(MOCKDEVICE_UID));
 	}
 
 	/**
@@ -166,12 +171,14 @@ public class NotifierDeviceEnumerateListenerTest {
 
 		listener = new NotifierDeviceEnumerateListener(ipConnection,
 				serviceLoader, configuration);
-		listener.enumerate(MOCKDEVICE_UID, MOCKDEVICE_IDENTIFIER, (short) 0, true);
+		listener.enumerate(MOCKDEVICE_UID, MOCKDEVICE_IDENTIFIER, (short) 0,
+				true);
 
 		verify(notifierDevice, never()).setConfiguration(brickletConfiguration);
 		verify(ipConnection).addDevice(bricklet);
 		assertEquals(1, listener.getNotifierDevices().size());
-		assertEquals(notifierDevice, listener.getNotifierDevices().get(MOCKDEVICE_UID));
+		assertEquals(notifierDevice,
+				listener.getNotifierDevices().get(MOCKDEVICE_UID));
 	}
 
 	/**
@@ -184,14 +191,17 @@ public class NotifierDeviceEnumerateListenerTest {
 	public void addAndRemoveNotifier() throws TimeoutException {
 		listener = new NotifierDeviceEnumerateListener(ipConnection,
 				serviceLoader, configuration);
-		listener.enumerate(MOCKDEVICE_UID, MOCKDEVICE_IDENTIFIER, (short) 0, true);
+		listener.enumerate(MOCKDEVICE_UID, MOCKDEVICE_IDENTIFIER, (short) 0,
+				true);
 
 		verify(notifierDevice, never()).setConfiguration(brickletConfiguration);
 		verify(ipConnection).addDevice(bricklet);
 		assertEquals(1, listener.getNotifierDevices().size());
-		assertEquals(notifierDevice, listener.getNotifierDevices().get(MOCKDEVICE_UID));
+		assertEquals(notifierDevice,
+				listener.getNotifierDevices().get(MOCKDEVICE_UID));
 
-		listener.enumerate(MOCKDEVICE_UID, MOCKDEVICE_IDENTIFIER, (short) 0, false);
+		listener.enumerate(MOCKDEVICE_UID, MOCKDEVICE_IDENTIFIER, (short) 0,
+				false);
 		assertEquals(0, listener.getNotifierDevices().size());
 		assertFalse(listener.getNotifierDevices().containsKey(MOCKDEVICE_UID));
 	}
@@ -206,7 +216,8 @@ public class NotifierDeviceEnumerateListenerTest {
 	public void addUnsupportedNotifier() throws TimeoutException {
 		listener = new NotifierDeviceEnumerateListener(ipConnection,
 				serviceLoader, null);
-		listener.enumerate(MOCKDEVICE_UID, "UnsupportedDevice 1.0", (short) 0, true);
+		listener.enumerate(MOCKDEVICE_UID, "UnsupportedDevice 1.0", (short) 0,
+				true);
 
 		verify(ipConnection, never()).addDevice(bricklet);
 		assertEquals(0, listener.getNotifierDevices().size());
