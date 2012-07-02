@@ -1,8 +1,10 @@
 package com.buschmais.tinkerforge4jenkins.core.registry;
 
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
 import com.buschmais.tinkerforge4jenkins.core.NotifierDeviceFactory;
@@ -19,13 +21,18 @@ import com.tinkerforge.IPConnection.TimeoutException;
  * 
  * @author dirk.mahler
  */
-final class NotifierDeviceEnumerateListener implements EnumerateListener {
+public final class NotifierDeviceEnumerateListener implements EnumerateListener {
+
+	/**
+	 * The logger.
+	 */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(NotifierDeviceEnumerateListener.class);
 
 	/**
 	 * The service loader for the {@link NotifierDeviceFactory}s.
 	 */
-	private static final ServiceLoader<NotifierDeviceFactory> NOTIFIERDEVICEFACTORY_SERVICELOADER = ServiceLoader
-			.load(NotifierDeviceFactory.class);
+	private Iterable<NotifierDeviceFactory> notifierDeviceFactoryLoader;
 
 	/**
 	 * The ip connection.
@@ -47,25 +54,27 @@ final class NotifierDeviceEnumerateListener implements EnumerateListener {
 	 * 
 	 * @param ipConnection
 	 *            The ip connection to the TinkerForge devices.
+	 * @param serviceLoader
+	 *            The {@link Iterable} representing the service loader.
 	 * @param configuration
 	 *            The configuration of the notifier devices.
 	 */
-	NotifierDeviceEnumerateListener(IPConnection ipConnection,
+	public NotifierDeviceEnumerateListener(IPConnection ipConnection,
+			Iterable<NotifierDeviceFactory> serviceLoader,
 			TinkerForgeConfigurationType configuration) {
 		this.ipcon = ipConnection;
+		this.notifierDeviceFactoryLoader = serviceLoader;
 		this.configuration = configuration;
 	}
 
 	@Override
 	public void enumerate(String uid, String name, short stackID, boolean isNew) {
 		if (isNew) {
-			NotifierDeviceRegistry.LOGGER.info(
-					"Device '{}' with uid '{}' added.", name.trim(), uid);
+			LOGGER.info("Device '{}' with uid '{}' added.", name.trim(), uid);
 			// Iterate over all factories and match the given name.
-			for (NotifierDeviceFactory factory : NOTIFIERDEVICEFACTORY_SERVICELOADER) {
+			for (NotifierDeviceFactory factory : notifierDeviceFactoryLoader) {
 				if (factory.match(name.trim())) {
-					NotifierDeviceRegistry.LOGGER.info(
-							"Registering notifier '{}' (uid='{}').",
+					LOGGER.info("Registering notifier '{}' (uid='{}').",
 							name.trim(), uid);
 					// Create the notifier device.
 					NotifierDevice<? extends Device, ? extends BrickletConfigurationType> notifier = factory
@@ -89,19 +98,17 @@ final class NotifierDeviceEnumerateListener implements EnumerateListener {
 					try {
 						ipcon.addDevice(notifier.getDevice());
 					} catch (TimeoutException e) {
-						NotifierDeviceRegistry.LOGGER.warn(String.format(
+						LOGGER.warn(String.format(
 								"Cannot add device with uid '%s',", uid), e);
 					}
 				}
 			}
 		} else {
 			// Remove the device.
-			NotifierDeviceRegistry.LOGGER.info(
-					"Device '{}' with uid '{}' removed.", name.trim(), uid);
+			LOGGER.info("Device '{}' with uid '{}' removed.", name.trim(), uid);
 			if (this.notifierDevices.remove(uid) != null) {
-				NotifierDeviceRegistry.LOGGER.info(
-						"Unregistering notifier '{}' (uid='{}').", name.trim(),
-						uid);
+				LOGGER.info("Unregistering notifier '{}' (uid='{}').",
+						name.trim(), uid);
 			}
 		}
 	}

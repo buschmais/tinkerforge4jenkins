@@ -2,11 +2,13 @@ package com.buschmais.tinkerforge4jenkins.core.registry;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.ServiceLoader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
+import com.buschmais.tinkerforge4jenkins.core.NotifierDeviceFactory;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.ConnectionConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.TinkerForgeConfigurationType;
@@ -33,13 +35,13 @@ public class NotifierDeviceRegistry {
 	/**
 	 * The logger.
 	 */
-	static final Logger LOGGER = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(NotifierDeviceRegistry.class);
 
 	/**
 	 * The configuration for the TinkerForge devices.
 	 */
-	TinkerForgeConfigurationType configuration;
+	private TinkerForgeConfigurationType configuration;
 
 	/**
 	 * Constructor.
@@ -80,7 +82,8 @@ public class NotifierDeviceRegistry {
 		final IPConnection ipcon = new IPConnection(host, port);
 		// Use the enumeration listener for device management.
 		NotifierDeviceEnumerateListener listener = new NotifierDeviceEnumerateListener(
-				ipcon, configuration);
+				ipcon, ServiceLoader.load(NotifierDeviceFactory.class),
+				configuration);
 		ipcon.enumerate(listener);
 		return listener.getNotifierDevices().values();
 	}
