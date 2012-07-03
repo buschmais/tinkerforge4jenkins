@@ -51,11 +51,11 @@
 	
 	<distributionManagement>
 		<repository>
-			<id>buschmais-releases</id>
+			<id>nexus</id>
 			<url>http://nexus.buschmais.com/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
-			<id>buschmais-snapshots</id>
+			<id>nexus</id>
 			<url>http://nexus.buschmais.com/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
