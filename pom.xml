@@ -48,6 +48,17 @@
 			<url>http://download.java.net/maven/2/</url>
 		</repository>
 	</repositories>
+	
+	<distributionManagement>
+		<repository>
+			<id>buschmais-releases</id>
+			<url>http://nexus.buschmais.com/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>buschmais-snapshots</id>
+			<url>http://nexus.buschmais.com/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<properties>
 		<org.slf4j_version>1.6.1</org.slf4j_version>
