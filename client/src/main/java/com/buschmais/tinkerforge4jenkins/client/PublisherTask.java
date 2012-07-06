@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
-import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.AbstractBrickletConfigurationType;
 import com.tinkerforge.Device;
 
 /**
@@ -29,7 +29,7 @@ public class PublisherTask extends Thread {
 	/**
 	 * The collection of {@link NotifierDevice}s.
 	 */
-	private Collection<NotifierDevice<? extends Device, ? extends BrickletConfigurationType>> notifierDevices;
+	private Collection<NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>> notifierDevices;
 
 	/**
 	 * The {@link JenkinsHttpClient}.
@@ -46,7 +46,7 @@ public class PublisherTask extends Thread {
 	 */
 	public PublisherTask(
 			JenkinsHttpClient jenkinsHttpClient,
-			Collection<NotifierDevice<? extends Device, ? extends BrickletConfigurationType>> notifierDevices) {
+			Collection<NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>> notifierDevices) {
 		this.notifierDevices = notifierDevices;
 		this.jenkinsHttpClient = jenkinsHttpClient;
 	}
@@ -54,7 +54,7 @@ public class PublisherTask extends Thread {
 	@Override
 	public void run() {
 		LOGGER.debug("Updating status from Jenkins.");
-		for (NotifierDevice<? extends Device, ? extends BrickletConfigurationType> notifierDevice : notifierDevices) {
+		for (NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType> notifierDevice : notifierDevices) {
 			notifierDevice.preUpdate();
 		}
 		List<JobState> states = null;
@@ -62,7 +62,7 @@ public class PublisherTask extends Thread {
 			states = jenkinsHttpClient.getJobStates();
 		} catch (IOException e) {
 			LOGGER.warn("Cannot get job states.", e);
-			for (NotifierDevice<? extends Device, ? extends BrickletConfigurationType> notifierDevice : notifierDevices) {
+			for (NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType> notifierDevice : notifierDevices) {
 				notifierDevice.updateFailed(e.getMessage());
 			}
 		}
@@ -70,12 +70,12 @@ public class PublisherTask extends Thread {
 			LOGGER.debug(states.toString());
 			LOGGER.debug("Publishing status to devices.");
 			for (JobState state : states) {
-				for (NotifierDevice<? extends Device, ? extends BrickletConfigurationType> notifierDevice : notifierDevices) {
+				for (NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType> notifierDevice : notifierDevices) {
 					notifierDevice.update(state);
 				}
 			}
 		}
-		for (NotifierDevice<? extends Device, ? extends BrickletConfigurationType> notifierDevice : notifierDevices) {
+		for (NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType> notifierDevice : notifierDevices) {
 			notifierDevice.postUpdate();
 		}
 	}

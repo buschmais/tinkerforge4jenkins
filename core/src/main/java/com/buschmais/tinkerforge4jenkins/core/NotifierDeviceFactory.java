@@ -1,6 +1,6 @@
 package com.buschmais.tinkerforge4jenkins.core;
 
-import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.AbstractBrickletConfigurationType;
 import com.tinkerforge.Device;
 
 /**
@@ -28,6 +28,6 @@ public interface NotifierDeviceFactory {
 	 *            The uid of the TinkerForge device.
 	 * @return The {@link NotifierDevice}.
 	 */
-	NotifierDevice<? extends Device, ? extends BrickletConfigurationType> create(
+	NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType> create(
 			String uid);
 }

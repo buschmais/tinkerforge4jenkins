@@ -21,6 +21,8 @@
 		</xs:sequence>
 	</xs:complexType>
 
+	<!-- Jenkins client configuration -->
+
 	<xs:complexType name="JenkinsConfigurationType">
 		<xs:sequence>
 			<xs:element name="url" type="xs:string" minOccurs="0"
@@ -36,6 +38,8 @@
 				minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
+
+	<!-- TinkerForge configuration -->
 
 	<xs:complexType name="TinkerForgeConfigurationType">
 		<xs:sequence>
@@ -55,6 +59,8 @@
 		</xs:sequence>
 	</xs:complexType>
 
+	<!-- TinkerForge Connection -->
+
 	<xs:complexType name="ConnectionConfigurationType">
 		<xs:sequence>
 			<xs:element name="host" type="xs:string" default="localhost" />
@@ -62,16 +68,20 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="BrickletConfigurationType"
+	<!-- Bricklets -->
+
+	<xs:complexType name="AbstractBrickletConfigurationType"
 		abstract="true">
 		<xs:sequence>
 			<xs:element name="uid" type="xs:string" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
+	<!-- Dual Relay Bricklet -->
+
 	<xs:complexType name="DualRelayConfigurationType">
 		<xs:complexContent>
-			<xs:extension base="tf4j-config:BrickletConfigurationType">
+			<xs:extension base="tf4j-config:AbstractBrickletConfigurationType">
 				<xs:sequence>
 					<xs:element name="port" type="tf4j-config:DualRelayPortType"
 						maxOccurs="2" />
@@ -95,14 +105,28 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="LCD20x4ConfigurationType">
+	<!-- LCD Bricklets -->
+
+	<xs:complexType name="AbstractLCDConfigurationType" abstract="true">
 		<xs:complexContent>
-			<xs:extension base="tf4j-config:BrickletConfigurationType">
+			<xs:extension base="tf4j-config:AbstractBrickletConfigurationType">
 				<xs:sequence>
 					<xs:element name="jobs" type="tf4j-config:JobsType"
 						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="LCD16x2ConfigurationType">
+		<xs:complexContent>
+			<xs:extension base="tf4j-config:AbstractLCDConfigurationType" />
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="LCD20x4ConfigurationType">
+		<xs:complexContent>
+			<xs:extension base="tf4j-config:AbstractLCDConfigurationType" />
 		</xs:complexContent>
 	</xs:complexType>
 

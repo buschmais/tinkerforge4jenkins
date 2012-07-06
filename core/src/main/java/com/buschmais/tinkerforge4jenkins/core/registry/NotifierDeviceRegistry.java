@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
 import com.buschmais.tinkerforge4jenkins.core.NotifierDeviceFactory;
-import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.AbstractBrickletConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.ConnectionConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.TinkerForgeConfigurationType;
 import com.tinkerforge.Device;
@@ -65,7 +65,7 @@ public class NotifierDeviceRegistry {
 	 *             If there is a communication problem with the TinkerForge
 	 *             devices.
 	 */
-	public Collection<NotifierDevice<? extends Device, ? extends BrickletConfigurationType>> start()
+	public Collection<NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>> start()
 			throws IOException {
 		String host = TINKERFORGE_DEFAULT_HOST;
 		int port = TINKERFORGE_DEFAULT_PORT;

@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
 
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
 import com.buschmais.tinkerforge4jenkins.core.registry.NotifierDeviceRegistry;
-import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.AbstractBrickletConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.ConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JenkinsConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.ObjectFactory;
@@ -92,7 +92,7 @@ public final class TinkerForge4JenkinsClient {
 		// Initialize the connection to the TinkerForge devices.
 		NotifierDeviceRegistry deviceRegistry = new NotifierDeviceRegistry(
 				configuration.getTinkerforge());
-		Collection<NotifierDevice<? extends Device, ? extends BrickletConfigurationType>> notifiers = null;
+		Collection<NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>> notifiers = null;
 		try {
 			notifiers = deviceRegistry.start();
 		} catch (IOException e) {

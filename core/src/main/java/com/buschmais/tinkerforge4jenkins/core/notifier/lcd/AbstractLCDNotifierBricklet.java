@@ -1,4 +1,4 @@
-package com.buschmais.tinkerforge4jenkins.core.notifier.lcd20x4;
+package com.buschmais.tinkerforge4jenkins.core.notifier.lcd;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -13,20 +13,20 @@ import org.slf4j.LoggerFactory;
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractNotifierDevice;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.AbstractLCDConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JobsType;
-import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.LCD20X4ConfigurationType;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLCD20x4.ButtonPressedListener;
+import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection.TimeoutException;
 
 /**
- * Implementation of a notifier device for LCD 20x4 bricklets.
+ * Abstract base implementation for LCD notifier devices.
  * 
  * @author dirk.mahler
  */
-public class LCD20x4NotifierBricklet extends
-		AbstractNotifierDevice<BrickletLCD20x4, LCD20X4ConfigurationType>
-		implements ButtonPressedListener {
+public abstract class AbstractLCDNotifierBricklet<T extends Device, C extends AbstractLCDConfigurationType>
+		extends AbstractNotifierDevice<T, C> implements ButtonPressedListener {
 
 	/**
 	 * {@link Comparator} implementation comparing {@link JobState}s by severity
@@ -48,26 +48,16 @@ public class LCD20x4NotifierBricklet extends
 	}
 
 	/**
-	 * The maximum number of rows that can be displayed.
-	 */
-	private static final int MAXIMUM_ROWS = 4;
-
-	/**
-	 * The maximum number of columns that can be displayed.
-	 */
-	private static final int MAXIMUM_COLUMNS = 20;
-
-	/**
 	 * The suffix to use if displayed job names do not fit to the size of the
 	 * LCD.
 	 */
-	private static final String LONG_JOBNAME_SUFFIX = "...";
+	private static final String LONG_JOBNAME_SUFFIX = ">";
 
 	/**
 	 * The logger.
 	 */
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(LCD20x4NotifierBricklet.class);
+			.getLogger(AbstractLCDNotifierBricklet.class);
 
 	/**
 	 * Constructor.
@@ -75,12 +65,29 @@ public class LCD20x4NotifierBricklet extends
 	 * @param uid
 	 *            The device uid.
 	 * @param bricklet
-	 *            The {@link BrickletLCD20x4} instance.
+	 *            The LCD device.
 	 */
-	public LCD20x4NotifierBricklet(String uid, BrickletLCD20x4 bricklet) {
-		super(uid, bricklet);
-		getDevice().addListener(this);
+	public AbstractLCDNotifierBricklet(String uid, T device) {
+		super(uid, device);
+		addListener(this);
 	}
+
+	protected abstract void addListener(
+			AbstractLCDNotifierBricklet<T, C> notifier);
+
+	protected abstract int getMaximumRows();
+
+	protected abstract int getMaximumColumns();
+
+	protected abstract void clearDisplay();
+
+	protected abstract boolean isBacklightOn() throws TimeoutException;
+
+	protected abstract void backlightOff();
+
+	protected abstract void backlightOn();
+
+	protected abstract void writeLine(int line, int position, String text);
 
 	/**
 	 * Switches the back light on or off.
@@ -92,11 +99,11 @@ public class LCD20x4NotifierBricklet extends
 	private void setBackLight(boolean state) {
 		LOGGER.debug("switching backlight: " + state);
 		try {
-			if (!getDevice().isBacklightOn() == state) {
+			if (!isBacklightOn() == state) {
 				if (state) {
-					getDevice().backlightOn();
+					backlightOn();
 				} else {
-					getDevice().backlightOff();
+					backlightOff();
 				}
 			}
 		} catch (TimeoutException e) {
@@ -107,15 +114,15 @@ public class LCD20x4NotifierBricklet extends
 	@Override
 	public void preUpdate() {
 		LOGGER.debug("clearing display before updating.");
-		getDevice().clearDisplay();
-		getDevice().writeLine((short) 0, (short) 0, "Updating status...");
+		clearDisplay();
+		writeLine((short) 0, (short) 0, "Updating status...");
 	}
 
 	@Override
 	public void postUpdate() {
 		LOGGER.debug("Clearing display before writing to device.");
-		getDevice().clearDisplay();
-		LCD20X4ConfigurationType configuration = getConfiguration();
+		clearDisplay();
+		C configuration = getConfiguration();
 		JobsType filter = null;
 		if (configuration != null) {
 			filter = configuration.getJobs();
@@ -146,12 +153,12 @@ public class LCD20x4NotifierBricklet extends
 		sortedJobs.addAll(jobs);
 		Iterator<JobState> iterator = sortedJobs.iterator();
 		int i = 0;
-		while (iterator.hasNext() && i < MAXIMUM_ROWS) {
+		while (iterator.hasNext() && i < getMaximumRows()) {
 			JobState summary = iterator.next();
 			if (!BuildState.SUCCESS.equals(summary.getBuildState())) {
 				String statusLine = createStatusLine(summary.getName(),
 						summary.getBuildState());
-				getDevice().writeLine((short) i, (short) 0, statusLine);
+				writeLine((short) i, (short) 0, statusLine);
 				i++;
 			}
 		}
@@ -159,10 +166,10 @@ public class LCD20x4NotifierBricklet extends
 
 	@Override
 	public void updateFailed(String message) {
-		getDevice().clearDisplay();
+		clearDisplay();
 		setBackLight(true);
-		getDevice().writeLine((short) 0, (short) 0, "No status available");
-		getDevice().writeLine((short) 1, (short) 0, message);
+		writeLine((short) 0, (short) 0, "No status available");
+		writeLine((short) 1, (short) 0, message);
 	}
 
 	@Override
@@ -181,8 +188,9 @@ public class LCD20x4NotifierBricklet extends
 	 */
 	public String createStatusLine(String jobName, BuildState buildState) {
 		String displayedJobName;
-		if (jobName.length() > MAXIMUM_COLUMNS - 2) {
-			displayedJobName = jobName.substring(0, MAXIMUM_COLUMNS
+		int maximumColumns = getMaximumColumns();
+		if (jobName.length() > maximumColumns - 2) {
+			displayedJobName = jobName.substring(0, maximumColumns
 					- LONG_JOBNAME_SUFFIX.length() - 2)
 					+ LONG_JOBNAME_SUFFIX;
 		} else {

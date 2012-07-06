@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
-import com.buschmais.tinkerforge4jenkins.core.notifier.lcd20x4.LCD20x4NotifierBricklet;
+import com.buschmais.tinkerforge4jenkins.core.notifier.lcd.LCD20x4NotifierBricklet;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.LCD20X4ConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.util.JobStateBuilder;
 import com.tinkerforge.BrickletLCD20x4;

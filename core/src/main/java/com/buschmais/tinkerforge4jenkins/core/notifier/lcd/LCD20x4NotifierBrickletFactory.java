@@ -1,4 +1,4 @@
-package com.buschmais.tinkerforge4jenkins.core.notifier.lcd20x4;
+package com.buschmais.tinkerforge4jenkins.core.notifier.lcd;
 
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
 import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractNotifierDeviceFactory;

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
 import com.buschmais.tinkerforge4jenkins.core.NotifierDeviceFactory;
-import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.AbstractBrickletConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.TinkerForgeConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.TinkerForgeConfigurationType.Bricklets;
 import com.tinkerforge.Device;
@@ -47,7 +47,7 @@ public final class NotifierDeviceEnumerateListener implements EnumerateListener 
 	/**
 	 * The currently active devices.
 	 */
-	private Map<String, NotifierDevice<? extends Device, ? extends BrickletConfigurationType>> notifierDevices = new ConcurrentHashMap<String, NotifierDevice<? extends Device, ? extends BrickletConfigurationType>>();
+	private Map<String, NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>> notifierDevices;
 
 	/**
 	 * Constructor.
@@ -65,6 +65,7 @@ public final class NotifierDeviceEnumerateListener implements EnumerateListener 
 		this.ipcon = ipConnection;
 		this.notifierDeviceFactoryLoader = serviceLoader;
 		this.configuration = configuration;
+		notifierDevices = new ConcurrentHashMap<String, NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>>();
 	}
 
 	@Override
@@ -77,14 +78,14 @@ public final class NotifierDeviceEnumerateListener implements EnumerateListener 
 					LOGGER.info("Registering notifier '{}' (uid='{}').",
 							name.trim(), uid);
 					// Create the notifier device.
-					NotifierDevice<? extends Device, ? extends BrickletConfigurationType> notifier = factory
+					NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType> notifier = factory
 							.create(uid);
 					// Find the configuration for the device.
 					if (this.configuration != null) {
 						Bricklets brickletsConfiguration = this.configuration
 								.getBricklets();
 						if (brickletsConfiguration != null) {
-							for (BrickletConfigurationType brickletConfiguration : brickletsConfiguration
+							for (AbstractBrickletConfigurationType brickletConfiguration : brickletsConfiguration
 									.getDualRelayOrLcd20X4()) {
 								if (uid.equals(brickletConfiguration.getUid())) {
 									// Apply the configuration.
@@ -119,7 +120,7 @@ public final class NotifierDeviceEnumerateListener implements EnumerateListener 
 	 * 
 	 * @return The map of {@link NotifierDevice}s.
 	 */
-	public Map<String, NotifierDevice<? extends Device, ? extends BrickletConfigurationType>> getNotifierDevices() {
+	public Map<String, NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>> getNotifierDevices() {
 		return notifierDevices;
 	}
 

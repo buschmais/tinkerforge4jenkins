@@ -1,6 +1,6 @@
 package com.buschmais.tinkerforge4jenkins.core;
 
-import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.AbstractBrickletConfigurationType;
 import com.tinkerforge.Device;
 
 /**
@@ -13,7 +13,7 @@ import com.tinkerforge.Device;
  * @param <C>
  *            The configuration type.
  */
-public interface NotifierDevice<T extends Device, C extends BrickletConfigurationType> {
+public interface NotifierDevice<T extends Device, C extends AbstractBrickletConfigurationType> {
 
 	/**
 	 * Return the underlying device.
@@ -28,7 +28,7 @@ public interface NotifierDevice<T extends Device, C extends BrickletConfiguratio
 	 * @param configuration
 	 *            The configuration.
 	 */
-	void setConfiguration(BrickletConfigurationType configuration);
+	void setConfiguration(AbstractBrickletConfigurationType configuration);
 
 	/**
 	 * Lifecycle callback which is called before any status updates are promoted

@@ -16,7 +16,7 @@ import org.junit.Test;
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
 import com.buschmais.tinkerforge4jenkins.core.NotifierDeviceFactory;
 import com.buschmais.tinkerforge4jenkins.core.registry.NotifierDeviceEnumerateListener;
-import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.AbstractBrickletConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.TinkerForgeConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.TinkerForgeConfigurationType.Bricklets;
 import com.tinkerforge.Device;
@@ -61,9 +61,9 @@ public class NotifierDeviceEnumerateListenerTest {
 	private Bricklets bricklets;
 
 	/**
-	 * The {@link BrickletConfigurationType}.
+	 * The {@link AbstractBrickletConfigurationType}.
 	 */
-	private BrickletConfigurationType brickletConfiguration;
+	private AbstractBrickletConfigurationType brickletConfiguration;
 
 	/**
 	 * The {@link NotifierDeviceFactory}.
@@ -82,11 +82,6 @@ public class NotifierDeviceEnumerateListenerTest {
 	private Device bricklet;
 
 	/**
-	 * The Iterator over {@link NotifierDeviceFactory}s.
-	 */
-	private Iterator<NotifierDeviceFactory> deviceFactoryIterator;
-
-	/**
 	 * Initialize the mocks.
 	 */
 	@SuppressWarnings("unchecked")
@@ -96,12 +91,11 @@ public class NotifierDeviceEnumerateListenerTest {
 		serviceLoader = mock(Iterable.class);
 		configuration = mock(TinkerForgeConfigurationType.class);
 		bricklets = mock(Bricklets.class);
-		brickletConfiguration = mock(BrickletConfigurationType.class);
+		brickletConfiguration = mock(AbstractBrickletConfigurationType.class);
 		deviceFactory = mock(NotifierDeviceFactory.class);
 		notifierDevice = mock(NotifierDevice.class);
 		bricklet = mock(Device.class);
-		deviceFactoryIterator = mock(Iterator.class);
-
+		Iterator<NotifierDeviceFactory> deviceFactoryIterator = mock(Iterator.class);
 		when(serviceLoader.iterator()).thenReturn(deviceFactoryIterator);
 		when(deviceFactoryIterator.hasNext()).thenReturn(true, false);
 		when(deviceFactoryIterator.next()).thenReturn(deviceFactory);

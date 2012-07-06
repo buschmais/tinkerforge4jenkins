@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
-import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BrickletConfigurationType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.AbstractBrickletConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JobsType;
 import com.tinkerforge.Device;
 
@@ -29,7 +29,7 @@ import com.tinkerforge.Device;
  * @param <C>
  *            The configuration type.
  */
-public abstract class AbstractNotifierDevice<T extends Device, C extends BrickletConfigurationType>
+public abstract class AbstractNotifierDevice<T extends Device, C extends AbstractBrickletConfigurationType>
 		implements NotifierDevice<T, C> {
 
 	/**
@@ -87,7 +87,7 @@ public abstract class AbstractNotifierDevice<T extends Device, C extends Brickle
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void setConfiguration(BrickletConfigurationType configuration) {
+	public void setConfiguration(AbstractBrickletConfigurationType configuration) {
 		ParameterizedType type = (ParameterizedType) this.getClass()
 				.getGenericSuperclass();
 		Class<C> configurationType = (Class<C>) type.getActualTypeArguments()[1];
