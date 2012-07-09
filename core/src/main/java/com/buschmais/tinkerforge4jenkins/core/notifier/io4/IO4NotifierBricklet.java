@@ -35,6 +35,10 @@ public class IO4NotifierBricklet extends
 	 */
 	protected IO4NotifierBricklet(String uid, BrickletIO4 device) {
 		super(uid, device);
+	}
+
+	@Override
+	public void preUpdate() {
 		// configure the bricklet: output high on all pins
 		getDevice().setConfiguration(
 				(short) (PIN_RED + PIN_YELLOW + PIN_GREEN + PIN_BUILDING), 'o',
@@ -42,12 +46,14 @@ public class IO4NotifierBricklet extends
 	}
 
 	@Override
-	public void preUpdate() {
-	}
-
-	@Override
 	public void postUpdate() {
-		JobsType filter = getConfiguration().getJobs();
+		IO4ConfigurationType configuration = getConfiguration();
+		JobsType filter;
+		if (configuration != null) {
+			filter = getConfiguration().getJobs();
+		} else {
+			filter = null;
+		}
 		int value = 0;
 		if (!filter(getJobsByBuildState(FAILURE), filter).isEmpty()) {
 			value = PIN_RED;
@@ -60,14 +66,10 @@ public class IO4NotifierBricklet extends
 			// green
 			value = PIN_GREEN;
 		}
-		boolean building = false;
 		for (JobState jobState : filter(getJobStates().values(), filter)) {
 			if (jobState.isBuilding()) {
-				building = true;
+				value = value | PIN_BUILDING;
 			}
-		}
-		if (building) {
-			value = value + PIN_BUILDING;
 		}
 		getDevice().setValue((short) value);
 	}
