@@ -55,7 +55,8 @@ public class PublisherTaskTest {
 	 */
 	@Test
 	public void pollAndPublishStates() throws IOException {
-		JobState jobState = JobStateBuilder.create("Job 1", BuildState.SUCCESS);
+		JobState jobState = JobStateBuilder.create("Job 1", BuildState.SUCCESS,
+				false);
 		when(jenkinsHttpClient.getJobStates()).thenReturn(
 				Arrays.asList(new JobState[] { jobState }));
 		publisherTask.run();

@@ -172,7 +172,7 @@ public class DualRelayBrickletNotifierTest extends AbstractBrickletNotifierTest 
 		int i = 0;
 		for (BuildState buildState : buildStates) {
 			notifier.update(JobStateBuilder.create(Integer.toString(i),
-					buildState));
+					buildState, false));
 			i++;
 		}
 		notifier.postUpdate();

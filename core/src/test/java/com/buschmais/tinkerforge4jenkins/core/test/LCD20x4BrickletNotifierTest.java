@@ -73,7 +73,8 @@ public class LCD20x4BrickletNotifierTest extends AbstractBrickletNotifierTest {
 		notifier.preUpdate();
 		verify(mock).writeLine((short) 0, (short) 0, "Updating status...");
 		verify(mock).clearDisplay();
-		notifier.update(JobStateBuilder.create(JOBNAME_PREFIX + "0", FAILURE));
+		notifier.update(JobStateBuilder.create(JOBNAME_PREFIX + "0", FAILURE,
+				false));
 		verify(mock).clearDisplay();
 		notifier.postUpdate();
 		verify(mock, times(2)).clearDisplay();
@@ -176,7 +177,7 @@ public class LCD20x4BrickletNotifierTest extends AbstractBrickletNotifierTest {
 		int i = 0;
 		for (BuildState buildState : buildStates) {
 			notifier.update(JobStateBuilder.create(
-					JOBNAME_PREFIX + Integer.toString(i), buildState));
+					JOBNAME_PREFIX + Integer.toString(i), buildState, false));
 			i++;
 		}
 		notifier.postUpdate();

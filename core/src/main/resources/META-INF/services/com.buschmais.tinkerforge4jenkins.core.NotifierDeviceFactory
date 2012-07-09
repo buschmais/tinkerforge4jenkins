@@ -1,3 +1,4 @@
 com.buschmais.tinkerforge4jenkins.core.notifier.dualrelay.DualRelayNotifierBrickletFactory
+com.buschmais.tinkerforge4jenkins.core.notifier.io4.IO4NotifierBrickletFactory
 com.buschmais.tinkerforge4jenkins.core.notifier.lcd.LCD16x2NotifierBrickletFactory
 com.buschmais.tinkerforge4jenkins.core.notifier.lcd.LCD20x4NotifierBrickletFactory

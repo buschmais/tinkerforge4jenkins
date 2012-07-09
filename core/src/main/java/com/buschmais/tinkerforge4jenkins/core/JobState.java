@@ -18,6 +18,11 @@ public class JobState {
 	private BuildState buildState;
 
 	/**
+	 * Indicates if the job is currently building.
+	 */
+	private boolean building;
+
+	/**
 	 * Return the name.
 	 * 
 	 * @return the name
@@ -55,9 +60,29 @@ public class JobState {
 		this.buildState = buildState;
 	}
 
+	/**
+	 * Return if the job is currently building.
+	 * 
+	 * @return <code>true</code> if the job is currently building.
+	 */
+	public boolean isBuilding() {
+		return building;
+	}
+
+	/**
+	 * Set if the job is currently building.
+	 * 
+	 * @param building
+	 *            <code>true</code> if the job is currently building.
+	 */
+	public void setBuilding(boolean building) {
+		this.building = building;
+	}
+
 	@Override
 	public String toString() {
-		return "JobState [name=" + name + ", status=" + buildState + "]";
+		return "JobState [name=" + name + ", status=" + buildState
+				+ ", building=" + building + "]";
 	}
 
 }

@@ -124,15 +124,19 @@ public abstract class AbstractNotifierDevice<T extends Device, C extends Abstrac
 	}
 
 	/**
-	 * Return the {@link JobState}s matching the given {@link BuildState}.
+	 * Return the {@link JobState}s matching the given {@link BuildState}s.
 	 * 
-	 * @param buildState
-	 *            The {@link BuildState}.
+	 * @param buildStates
+	 *            The {@link BuildState}s.
 	 * 
 	 * @return the {@link JobState}s.
 	 */
-	public Set<JobState> getJobsByBuildState(BuildState buildState) {
-		return jobStatesByBuildState.get(buildState);
+	public Set<JobState> getJobsByBuildState(BuildState... buildStates) {
+		Set<JobState> jobsByBuildState = new HashSet<JobState>();
+		for (BuildState buildState : buildStates) {
+			jobsByBuildState.addAll(jobStatesByBuildState.get(buildState));
+		}
+		return jobsByBuildState;
 	}
 
 	/**

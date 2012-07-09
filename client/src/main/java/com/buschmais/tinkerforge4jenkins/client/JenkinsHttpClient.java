@@ -114,12 +114,15 @@ public class JenkinsHttpClient {
 								+ "lastBuild");
 						String buildState = lastBuildNode.get("result")
 								.getTextValue();
+						Boolean building = lastBuildNode.get("building")
+								.getBooleanValue();
 						JobState state;
 						if (buildState != null) {
-							state = JobStateBuilder.create(jobName, buildState);
+							state = JobStateBuilder.create(jobName, buildState,
+									building);
 						} else {
 							state = JobStateBuilder.create(jobName,
-									BuildState.UNKNOWN);
+									BuildState.UNKNOWN, building);
 						}
 						result.add(state);
 					}

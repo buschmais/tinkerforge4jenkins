@@ -107,7 +107,8 @@
 
 	<!-- LCD Bricklets -->
 
-	<xs:complexType name="AbstractLCDConfigurationType" abstract="true">
+	<xs:complexType name="AbstractLCDConfigurationType"
+		abstract="true">
 		<xs:complexContent>
 			<xs:extension base="tf4j-config:AbstractBrickletConfigurationType">
 				<xs:sequence>
@@ -130,4 +131,16 @@
 		</xs:complexContent>
 	</xs:complexType>
 
+	<!-- IO4 Bricklet -->
+
+	<xs:complexType name="IO4ConfigurationType">
+		<xs:complexContent>
+			<xs:extension base="tf4j-config:AbstractBrickletConfigurationType">
+				<xs:sequence>
+					<xs:element name="jobs" type="tf4j-config:JobsType"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 </xs:schema>

@@ -1,11 +1,13 @@
 package com.buschmais.tinkerforge4jenkins.core.notifier.dualrelay;
 
+import static com.buschmais.tinkerforge4jenkins.core.BuildState.ABORTED;
+import static com.buschmais.tinkerforge4jenkins.core.BuildState.FAILURE;
+import static com.buschmais.tinkerforge4jenkins.core.BuildState.UNSTABLE;
+
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractNotifierDevice;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.DualRelayConfigurationType;
@@ -47,10 +49,7 @@ public class DualRelayNotifierBricklet extends
 		}
 		Map<Integer, Boolean> relayStates = new HashMap<Integer, Boolean>();
 		for (int i = 1; i <= 2; i++) {
-			Set<JobState> jobs = new HashSet<JobState>();
-			jobs.addAll(getJobsByBuildState(BuildState.ABORTED));
-			jobs.addAll(getJobsByBuildState(BuildState.FAILURE));
-			jobs.addAll(getJobsByBuildState(BuildState.UNSTABLE));
+			Set<JobState> jobs = getJobsByBuildState(ABORTED, FAILURE, UNSTABLE);
 			DualRelayPortType portConfiguration = portConfigurations
 					.get(Integer.valueOf(i));
 			if (portConfiguration != null) {

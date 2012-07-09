@@ -23,12 +23,16 @@ public final class JobStateBuilder {
 	 *            The name of the job.
 	 * @param buildState
 	 *            The {@link BuildState} of the job.
+	 * @param building
+	 *            <code>true</code> if the job is currently building.
 	 * @return The {@link JobState} instance.
 	 */
-	public static JobState create(String name, BuildState buildState) {
+	public static JobState create(String name, BuildState buildState,
+			boolean building) {
 		JobState jobState = new JobState();
 		jobState.setName(name);
 		jobState.setBuildState(buildState);
+		jobState.setBuilding(building);
 		return jobState;
 	}
 
@@ -39,9 +43,12 @@ public final class JobStateBuilder {
 	 *            The name of the job.
 	 * @param buildState
 	 *            The string representing the {@link BuildState} of the job.
+	 * @param building
+	 *            <code>true</code> if the job is currently building.
 	 * @return The {@link JobState} instance.
 	 */
-	public static JobState create(String name, String buildState) {
-		return create(name, BuildState.valueOf(buildState));
+	public static JobState create(String name, String buildState,
+			boolean building) {
+		return create(name, BuildState.valueOf(buildState), building);
 	}
 }
