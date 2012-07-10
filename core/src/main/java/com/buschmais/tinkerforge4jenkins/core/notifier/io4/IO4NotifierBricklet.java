@@ -20,10 +20,10 @@ import com.tinkerforge.BrickletIO4;
 public class IO4NotifierBricklet extends
 		AbstractNotifierDevice<BrickletIO4, IO4ConfigurationType> {
 
-	private static final int PIN_BUILDING = 8;
 	private static final int PIN_GREEN = 1;
 	private static final int PIN_YELLOW = 2;
 	private static final int PIN_RED = 4;
+	private static final int PIN_BUILDING = 8;
 
 	/**
 	 * Constructor
@@ -33,7 +33,7 @@ public class IO4NotifierBricklet extends
 	 * @param device
 	 *            The device.
 	 */
-	protected IO4NotifierBricklet(String uid, BrickletIO4 device) {
+	public IO4NotifierBricklet(String uid, BrickletIO4 device) {
 		super(uid, device);
 	}
 
