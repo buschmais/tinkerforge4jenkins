@@ -5,6 +5,10 @@ import static com.buschmais.tinkerforge4jenkins.core.BuildState.FAILURE;
 import static com.buschmais.tinkerforge4jenkins.core.BuildState.NOT_BUILT;
 import static com.buschmais.tinkerforge4jenkins.core.BuildState.UNKNOWN;
 import static com.buschmais.tinkerforge4jenkins.core.BuildState.UNSTABLE;
+import static com.buschmais.tinkerforge4jenkins.core.notifier.io4.IO4NotifierBricklet.Pin.BUILDING;
+import static com.buschmais.tinkerforge4jenkins.core.notifier.io4.IO4NotifierBricklet.Pin.GREEN;
+import static com.buschmais.tinkerforge4jenkins.core.notifier.io4.IO4NotifierBricklet.Pin.RED;
+import static com.buschmais.tinkerforge4jenkins.core.notifier.io4.IO4NotifierBricklet.Pin.YELLOW;
 
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractNotifierDevice;
@@ -20,13 +24,24 @@ import com.tinkerforge.BrickletIO4;
 public class IO4NotifierBricklet extends
 		AbstractNotifierDevice<BrickletIO4, IO4ConfigurationType> {
 
-	private static final int PIN_GREEN = 1;
-	private static final int PIN_YELLOW = 2;
-	private static final int PIN_RED = 4;
-	private static final int PIN_BUILDING = 8;
+	public enum Pin {
+
+		GREEN(0), YELLOW(1), RED(2), BUILDING(3);
+
+		private int number;
+
+		Pin(int number) {
+			this.number = number;
+		}
+
+		public short getValue() {
+			return (short) (1 << number);
+		}
+
+	}
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param uid
 	 *            The uid of the device.
@@ -40,9 +55,8 @@ public class IO4NotifierBricklet extends
 	@Override
 	public void preUpdate() {
 		// configure the bricklet: output high on all pins
-		getDevice().setConfiguration(
-				(short) (PIN_RED + PIN_YELLOW + PIN_GREEN + PIN_BUILDING), 'o',
-				true);
+
+		getDevice().setConfiguration((short) getAllPiNValues(), 'o', true);
 	}
 
 	@Override
@@ -54,21 +68,22 @@ public class IO4NotifierBricklet extends
 		} else {
 			filter = null;
 		}
-		int value = 0;
+		Pin pin = null;
 		if (!filter(getJobsByBuildState(FAILURE), filter).isEmpty()) {
-			value = PIN_RED;
+			pin = RED;
 			// red
 		} else if (!getJobsByBuildState(ABORTED, NOT_BUILT, UNKNOWN, UNSTABLE)
 				.isEmpty()) {
 			// yellow
-			value = PIN_YELLOW;
+			pin = YELLOW;
 		} else {
 			// green
-			value = PIN_GREEN;
+			pin = GREEN;
 		}
+		int value = pin.getValue();
 		for (JobState jobState : filter(getJobStates().values(), filter)) {
 			if (jobState.isBuilding()) {
-				value = value | PIN_BUILDING;
+				value = value | BUILDING.getValue();
 			}
 		}
 		getDevice().setValue((short) value);
@@ -76,7 +91,19 @@ public class IO4NotifierBricklet extends
 
 	@Override
 	public void updateFailed(String message) {
-		getDevice().setValue(
-				(short) (PIN_RED + PIN_YELLOW + PIN_GREEN + PIN_BUILDING));
+		getDevice().setValue((short) (getAllPiNValues()));
+	}
+
+	/**
+	 * Returns the value to set on the bricklet to activate all pins.
+	 * 
+	 * @return The value to activate all pins.
+	 */
+	private short getAllPiNValues() {
+		short value = 0;
+		for (Pin state : Pin.values()) {
+			value = (short) (value + state.getValue());
+		}
+		return (short) value;
 	}
 }
