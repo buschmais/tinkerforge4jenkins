@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.buschmais.tinkerforge4jenkins</groupId>
 	<artifactId>tinkerforge4jenkins-parent</artifactId>
@@ -39,7 +40,7 @@
 
 	<repositories>
 		<repository>
-			<id>buschmais-thirdparty-releases</id>
+			<id>buschmais-thirdparty</id>
 			<url>http://repository.buschmais.com/thirdparty/</url>
 		</repository>
 		<repository>
@@ -47,7 +48,7 @@
 			<url>http://download.java.net/maven/2/</url>
 		</repository>
 	</repositories>
-	
+
 	<distributionManagement>
 		<repository>
 			<id>nexus</id>
@@ -131,7 +132,7 @@
 			<dependency>
 				<groupId>com.tinkerforge</groupId>
 				<artifactId>tinkerforge-java-bindings</artifactId>
-				<version>1.0.10</version>
+				<version>1.0.15</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
