@@ -1,14 +1,14 @@
 package com.buschmais.tinkerforge4jenkins.core.notifier.io4;
 
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.ABORTED;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.FAILURE;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.NOT_BUILT;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.UNKNOWN;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.UNSTABLE;
 import static com.buschmais.tinkerforge4jenkins.core.notifier.io4.IO4NotifierBricklet.Pin.BUILDING;
 import static com.buschmais.tinkerforge4jenkins.core.notifier.io4.IO4NotifierBricklet.Pin.GREEN;
 import static com.buschmais.tinkerforge4jenkins.core.notifier.io4.IO4NotifierBricklet.Pin.RED;
 import static com.buschmais.tinkerforge4jenkins.core.notifier.io4.IO4NotifierBricklet.Pin.YELLOW;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.ABORTED;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.FAILURE;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.NOT_BUILT;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.UNKNOWN;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.UNSTABLE;
 
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.notifier.common.AbstractNotifierDevice;

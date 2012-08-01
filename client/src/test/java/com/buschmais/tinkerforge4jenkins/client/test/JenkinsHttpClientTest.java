@@ -1,11 +1,11 @@
 package com.buschmais.tinkerforge4jenkins.client.test;
 
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.ABORTED;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.FAILURE;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.NOT_BUILT;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.SUCCESS;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.UNKNOWN;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.UNSTABLE;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.ABORTED;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.FAILURE;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.NOT_BUILT;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.SUCCESS;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.UNKNOWN;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.UNSTABLE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -26,8 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.buschmais.tinkerforge4jenkins.client.JenkinsHttpClient;
-import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JenkinsConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JobsType;
 
@@ -66,7 +66,7 @@ public class JenkinsHttpClientTest {
 				get("lastBuild6_UNKNOWN.json"));
 		List<JobState> jobStates = jenkinsHttpClient.getJobStates();
 		assertEquals(6, jobStates.size());
-		Map<String, BuildState> expectedStates = new HashMap<String, BuildState>();
+		Map<String, BuildStateType> expectedStates = new HashMap<String, BuildStateType>();
 		expectedStates.put("Job1", SUCCESS);
 		expectedStates.put("Job2", FAILURE);
 		expectedStates.put("Job3", UNSTABLE);
@@ -100,7 +100,7 @@ public class JenkinsHttpClientTest {
 				get("jobs.json"), get("lastBuild1_SUCCESS.json"));
 		List<JobState> jobStates = jenkinsHttpClient.getJobStates();
 		assertEquals(1, jobStates.size());
-		Map<String, BuildState> expectedStates = new HashMap<String, BuildState>();
+		Map<String, BuildStateType> expectedStates = new HashMap<String, BuildStateType>();
 		expectedStates.put("Job1", SUCCESS);
 		for (JobState jobState : jobStates) {
 			Assert.assertEquals(jobState.getBuildState(),

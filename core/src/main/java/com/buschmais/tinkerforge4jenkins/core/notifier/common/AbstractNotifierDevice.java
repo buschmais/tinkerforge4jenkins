@@ -12,10 +12,10 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.AbstractBrickletConfigurationType;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JobsType;
 import com.tinkerforge.Device;
 
@@ -60,9 +60,9 @@ public abstract class AbstractNotifierDevice<T extends Device, C extends Abstrac
 
 	/**
 	 * A map holding sets {@link JobState}s according to their
-	 * {@link BuildState}s.
+	 * {@link BuildStateType}s.
 	 */
-	private Map<BuildState, Set<JobState>> jobStatesByBuildState = new HashMap<BuildState, Set<JobState>>();
+	private Map<BuildStateType, Set<JobState>> jobStatesByBuildState = new HashMap<BuildStateType, Set<JobState>>();
 
 	/**
 	 * Constructs the {@link AbstractNotifierDevice}.
@@ -75,7 +75,7 @@ public abstract class AbstractNotifierDevice<T extends Device, C extends Abstrac
 	protected AbstractNotifierDevice(String uid, T device) {
 		this.uid = uid;
 		this.device = device;
-		for (BuildState buildState : BuildState.values()) {
+		for (BuildStateType buildState : BuildStateType.values()) {
 			jobStatesByBuildState.put(buildState, new HashSet<JobState>());
 		}
 	}
@@ -124,16 +124,16 @@ public abstract class AbstractNotifierDevice<T extends Device, C extends Abstrac
 	}
 
 	/**
-	 * Return the {@link JobState}s matching the given {@link BuildState}s.
+	 * Return the {@link JobState}s matching the given {@link BuildStateType}s.
 	 * 
 	 * @param buildStates
-	 *            The {@link BuildState}s.
+	 *            The {@link BuildStateType}s.
 	 * 
 	 * @return the {@link JobState}s.
 	 */
-	public Set<JobState> getJobsByBuildState(BuildState... buildStates) {
+	public Set<JobState> getJobsByBuildState(BuildStateType... buildStates) {
 		Set<JobState> jobsByBuildState = new HashSet<JobState>();
-		for (BuildState buildState : buildStates) {
+		for (BuildStateType buildState : buildStates) {
 			jobsByBuildState.addAll(jobStatesByBuildState.get(buildState));
 		}
 		return jobsByBuildState;

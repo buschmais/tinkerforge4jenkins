@@ -1,5 +1,6 @@
 package com.buschmais.tinkerforge4jenkins.client.test;
 
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.SUCCESS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,7 +15,6 @@ import org.junit.Test;
 
 import com.buschmais.tinkerforge4jenkins.client.JenkinsHttpClient;
 import com.buschmais.tinkerforge4jenkins.client.PublisherTask;
-import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.AbstractBrickletConfigurationType;
@@ -55,8 +55,7 @@ public class PublisherTaskTest {
 	 */
 	@Test
 	public void pollAndPublishStates() throws IOException {
-		JobState jobState = JobStateBuilder.create("Job 1", BuildState.SUCCESS,
-				false);
+		JobState jobState = JobStateBuilder.create("Job 1", SUCCESS, false);
 		when(jenkinsHttpClient.getJobStates()).thenReturn(
 				Arrays.asList(new JobState[] { jobState }));
 		publisherTask.run();

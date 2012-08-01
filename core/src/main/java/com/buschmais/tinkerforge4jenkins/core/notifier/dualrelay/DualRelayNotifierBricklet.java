@@ -1,8 +1,8 @@
 package com.buschmais.tinkerforge4jenkins.core.notifier.dualrelay;
 
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.ABORTED;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.FAILURE;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.UNSTABLE;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.ABORTED;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.FAILURE;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.UNSTABLE;
 
 import java.util.HashMap;
 import java.util.Map;

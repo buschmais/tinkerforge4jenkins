@@ -7,8 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.notifier.dualrelay.DualRelayNotifierBricklet;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.DualRelayConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.DualRelayPortType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JobsType;
@@ -64,7 +64,7 @@ public class DualRelayBrickletNotifierTest extends AbstractBrickletNotifierTest 
 	 */
 	@Test
 	public void allBuildsSuccessful() throws TimeoutException {
-		test(false, false, BuildState.SUCCESS, BuildState.SUCCESS);
+		test(false, false, BuildStateType.SUCCESS, BuildStateType.SUCCESS);
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class DualRelayBrickletNotifierTest extends AbstractBrickletNotifierTest 
 	 */
 	@Test
 	public void oneBuildNotBuilt() throws TimeoutException {
-		test(false, false, BuildState.SUCCESS, BuildState.NOT_BUILT);
+		test(false, false, BuildStateType.SUCCESS, BuildStateType.NOT_BUILT);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class DualRelayBrickletNotifierTest extends AbstractBrickletNotifierTest 
 	 */
 	@Test
 	public void oneBuildUnknown() throws TimeoutException {
-		test(false, false, BuildState.SUCCESS, BuildState.UNKNOWN);
+		test(false, false, BuildStateType.SUCCESS, BuildStateType.UNKNOWN);
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class DualRelayBrickletNotifierTest extends AbstractBrickletNotifierTest 
 	 */
 	@Test
 	public void oneBuildAborted() throws TimeoutException {
-		test(true, true, BuildState.SUCCESS, BuildState.ABORTED);
+		test(true, true, BuildStateType.SUCCESS, BuildStateType.ABORTED);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class DualRelayBrickletNotifierTest extends AbstractBrickletNotifierTest 
 	 */
 	@Test
 	public void oneBuildFailure() throws TimeoutException {
-		test(true, true, BuildState.SUCCESS, BuildState.FAILURE);
+		test(true, true, BuildStateType.SUCCESS, BuildStateType.FAILURE);
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class DualRelayBrickletNotifierTest extends AbstractBrickletNotifierTest 
 	 */
 	@Test
 	public void oneBuildUnstable() throws TimeoutException {
-		test(true, true, BuildState.SUCCESS, BuildState.UNSTABLE);
+		test(true, true, BuildStateType.SUCCESS, BuildStateType.UNSTABLE);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class DualRelayBrickletNotifierTest extends AbstractBrickletNotifierTest 
 	@Test
 	public void filterRelay1() throws TimeoutException {
 		addFilter(1, JOBNAME_0);
-		test(false, true, BuildState.SUCCESS, BuildState.FAILURE);
+		test(false, true, BuildStateType.SUCCESS, BuildStateType.FAILURE);
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class DualRelayBrickletNotifierTest extends AbstractBrickletNotifierTest 
 	@Test
 	public void filterRelay2() throws TimeoutException {
 		addFilter(2, JOBNAME_0);
-		test(true, false, BuildState.SUCCESS, BuildState.FAILURE);
+		test(true, false, BuildStateType.SUCCESS, BuildStateType.FAILURE);
 	}
 
 	/**
@@ -162,15 +162,15 @@ public class DualRelayBrickletNotifierTest extends AbstractBrickletNotifierTest 
 	 * @param relay2
 	 *            The expected state if relay 2.
 	 * @param buildStates
-	 *            The {@link BuildState}s.
+	 *            The {@link BuildStateType}s.
 	 * @throws TimeoutException
 	 *             If a timeout occurs.
 	 */
-	private void test(boolean relay1, boolean relay2, BuildState... buildStates)
-			throws TimeoutException {
+	private void test(boolean relay1, boolean relay2,
+			BuildStateType... buildStates) throws TimeoutException {
 		notifier.preUpdate();
 		int i = 0;
-		for (BuildState buildState : buildStates) {
+		for (BuildStateType buildState : buildStates) {
 			notifier.update(JobStateBuilder.create(Integer.toString(i),
 					buildState, false));
 			i++;

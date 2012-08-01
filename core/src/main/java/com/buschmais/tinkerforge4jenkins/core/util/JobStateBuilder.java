@@ -1,7 +1,7 @@
 package com.buschmais.tinkerforge4jenkins.core.util;
 
-import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType;
 
 /**
  * Builder for {@link JobState} instances.
@@ -22,12 +22,12 @@ public final class JobStateBuilder {
 	 * @param name
 	 *            The name of the job.
 	 * @param buildState
-	 *            The {@link BuildState} of the job.
+	 *            The {@link BuildStateType} of the job.
 	 * @param building
 	 *            <code>true</code> if the job is currently building.
 	 * @return The {@link JobState} instance.
 	 */
-	public static JobState create(String name, BuildState buildState,
+	public static JobState create(String name, BuildStateType buildState,
 			boolean building) {
 		JobState jobState = new JobState();
 		jobState.setName(name);
@@ -42,13 +42,13 @@ public final class JobStateBuilder {
 	 * @param name
 	 *            The name of the job.
 	 * @param buildState
-	 *            The string representing the {@link BuildState} of the job.
+	 *            The string representing the {@link BuildStateType} of the job.
 	 * @param building
 	 *            <code>true</code> if the job is currently building.
 	 * @return The {@link JobState} instance.
 	 */
 	public static JobState create(String name, String buildState,
 			boolean building) {
-		return create(name, BuildState.valueOf(buildState), building);
+		return create(name, BuildStateType.valueOf(buildState), building);
 	}
 }

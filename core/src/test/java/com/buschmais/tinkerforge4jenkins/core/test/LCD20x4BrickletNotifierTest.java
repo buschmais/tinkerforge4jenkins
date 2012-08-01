@@ -1,11 +1,11 @@
 package com.buschmais.tinkerforge4jenkins.core.test;
 
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.ABORTED;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.FAILURE;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.NOT_BUILT;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.SUCCESS;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.UNKNOWN;
-import static com.buschmais.tinkerforge4jenkins.core.BuildState.UNSTABLE;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.ABORTED;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.FAILURE;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.NOT_BUILT;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.SUCCESS;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.UNKNOWN;
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.UNSTABLE;
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.stub;
@@ -16,8 +16,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.notifier.lcd.LCD20x4NotifierBricklet;
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.LCD20X4ConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.util.JobStateBuilder;
 import com.tinkerforge.BrickletLCD20x4;
@@ -168,19 +168,18 @@ public class LCD20x4BrickletNotifierTest extends AbstractBrickletNotifierTest {
 	 * Updates the state of the {@link LCD20x4NotifierBricklet}.
 	 * 
 	 * @param buildStates
-	 *            The {@link BuildState}s.
+	 *            The {@link BuildStateType}s.
 	 * @throws TimeoutException
 	 *             If a timeout occurs.
 	 */
-	private void update(BuildState... buildStates) throws TimeoutException {
+	private void update(BuildStateType... buildStates) throws TimeoutException {
 		notifier.preUpdate();
 		int i = 0;
-		for (BuildState buildState : buildStates) {
+		for (BuildStateType buildState : buildStates) {
 			notifier.update(JobStateBuilder.create(
 					JOBNAME_PREFIX + Integer.toString(i), buildState, false));
 			i++;
 		}
 		notifier.postUpdate();
 	}
-
 }

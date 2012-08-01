@@ -86,7 +86,7 @@ public final class NotifierDeviceEnumerateListener implements EnumerateListener 
 								.getBricklets();
 						if (brickletsConfiguration != null) {
 							for (AbstractBrickletConfigurationType brickletConfiguration : brickletsConfiguration
-									.getDualRelayOrLcd20X4()) {
+									.getDualRelayOrLcd16X2OrLcd20X4()) {
 								if (uid.equals(brickletConfiguration.getUid())) {
 									// Apply the configuration.
 									notifier.setConfiguration(brickletConfiguration);

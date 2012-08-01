@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:tf4j-config="http://www.buschmais.com/TinkerForge4Jenkins/core/schema/configuration/v1.0"
-	targetNamespace="http://www.buschmais.com/TinkerForge4Jenkins/core/schema/configuration/v1.0"
+	xmlns:tf4j-config="http://www.buschmais.com/TinkerForge4Jenkins/core/schema/configuration/v1.1"
+	targetNamespace="http://www.buschmais.com/TinkerForge4Jenkins/core/schema/configuration/v1.1"
 	elementFormDefault="qualified">
 
 	<xs:element name="configuration" type="tf4j-config:ConfigurationType" />
@@ -20,6 +20,17 @@
 			<xs:element name="job" type="xs:string" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
+
+	<xs:simpleType name="BuildStateType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FAILURE" />
+			<xs:enumeration value="UNSTABLE" />
+			<xs:enumeration value="ABORTED" />
+			<xs:enumeration value="UNKNOWN" />
+			<xs:enumeration value="NOT_BUILT" />
+			<xs:enumeration value="SUCCESS" />
+		</xs:restriction>
+	</xs:simpleType>
 
 	<!-- Jenkins client configuration -->
 
@@ -51,8 +62,15 @@
 						<xs:element name="dualRelay"
 							type="tf4j-config:DualRelayConfigurationType" minOccurs="0"
 							maxOccurs="unbounded" />
+						<xs:element name="lcd16x2" type="tf4j-config:LCD16x2ConfigurationType"
+							minOccurs="0" maxOccurs="unbounded" />
 						<xs:element name="lcd20x4" type="tf4j-config:LCD20x4ConfigurationType"
 							minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="io4" type="tf4j-config:IO4ConfigurationType"
+							minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="piezobuzzer"
+							type="tf4j-config:PiezoBuzzerConfigurationType" minOccurs="0"
+							maxOccurs="unbounded" />
 					</xs:choice>
 				</xs:complexType>
 			</xs:element>
@@ -143,4 +161,39 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+
+	<!-- Piezo Buzzer Bricklet -->
+
+	<xs:complexType name="PiezoBuzzerConfigurationType">
+		<xs:complexContent>
+			<xs:extension base="tf4j-config:AbstractBrickletConfigurationType">
+				<xs:sequence>
+					<xs:element name="jobs" type="tf4j-config:JobsType"
+						minOccurs="0" />
+					<xs:element name="onFailure" type="tf4j-config:MorseCodeType"
+						default="...---..." minOccurs="0" />
+					<xs:element name="onUnstable" type="tf4j-config:MorseCodeType"
+						default="...---..." minOccurs="0" /> <!-- ! -->
+					<xs:element name="onAborted" type="tf4j-config:MorseCodeType"
+						minOccurs="0" /> <!-- ? -->
+					<xs:element name="onUnknown" type="tf4j-config:MorseCodeType"
+						minOccurs="0" /> <!-- ? -->
+					<xs:element name="onNotBuilt" type="tf4j-config:MorseCodeType"
+						minOccurs="0" /> <!-- ? -->
+					<xs:element name="onSuccess" type="tf4j-config:MorseCodeType"
+						minOccurs="0" /> <!-- Ok -->
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+
+	<xs:simpleType name="MorseCodeType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[.\-\s]*"></xs:pattern>
+			<xs:minLength value="1" />
+			<xs:maxLength value="60" />
+		</xs:restriction>
+	</xs:simpleType>
+
 </xs:schema>

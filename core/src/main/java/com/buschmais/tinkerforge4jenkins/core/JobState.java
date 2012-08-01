@@ -1,5 +1,7 @@
 package com.buschmais.tinkerforge4jenkins.core;
 
+import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType;
+
 /**
  * Represents a state of a Jenkins job.
  * 
@@ -15,7 +17,7 @@ public class JobState {
 	/**
 	 * The state of the last build.
 	 */
-	private BuildState buildState;
+	private BuildStateType buildState;
 
 	/**
 	 * Indicates if the job is currently building.
@@ -46,7 +48,7 @@ public class JobState {
 	 * 
 	 * @return the state
 	 */
-	public BuildState getBuildState() {
+	public BuildStateType getBuildState() {
 		return buildState;
 	}
 
@@ -56,7 +58,7 @@ public class JobState {
 	 * @param buildState
 	 *            the state to set
 	 */
-	public void setBuildState(BuildState buildState) {
+	public void setBuildState(BuildStateType buildState) {
 		this.buildState = buildState;
 	}
 

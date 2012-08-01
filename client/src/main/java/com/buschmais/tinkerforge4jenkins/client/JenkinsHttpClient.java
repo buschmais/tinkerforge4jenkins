@@ -1,5 +1,7 @@
 package com.buschmais.tinkerforge4jenkins.client;
 
+import static com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.BuildStateType.UNKNOWN;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,7 +17,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.buschmais.tinkerforge4jenkins.core.BuildState;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JenkinsConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JobsType;
@@ -121,8 +122,8 @@ public class JenkinsHttpClient {
 							state = JobStateBuilder.create(jobName, buildState,
 									building);
 						} else {
-							state = JobStateBuilder.create(jobName,
-									BuildState.UNKNOWN, building);
+							state = JobStateBuilder.create(jobName, UNKNOWN,
+									building);
 						}
 						result.add(state);
 					}

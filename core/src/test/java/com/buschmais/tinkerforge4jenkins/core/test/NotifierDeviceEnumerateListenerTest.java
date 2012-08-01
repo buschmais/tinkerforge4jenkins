@@ -132,7 +132,7 @@ public class NotifierDeviceEnumerateListenerTest {
 	@Test
 	public void addNotifierWithMatchingConfiguration() throws TimeoutException {
 		when(configuration.getBricklets()).thenReturn(bricklets);
-		when(bricklets.getDualRelayOrLcd20X4()).thenReturn(
+		when(bricklets.getDualRelayOrLcd16X2OrLcd20X4()).thenReturn(
 				Arrays.asList(brickletConfiguration));
 		when(brickletConfiguration.getUid()).thenReturn(MOCKDEVICE_UID);
 
@@ -159,7 +159,7 @@ public class NotifierDeviceEnumerateListenerTest {
 	public void addNotifierWithNonMatchingConfiguration()
 			throws TimeoutException {
 		when(configuration.getBricklets()).thenReturn(bricklets);
-		when(bricklets.getDualRelayOrLcd20X4()).thenReturn(
+		when(bricklets.getDualRelayOrLcd16X2OrLcd20X4()).thenReturn(
 				Arrays.asList(brickletConfiguration));
 		when(brickletConfiguration.getUid()).thenReturn("456");
 
