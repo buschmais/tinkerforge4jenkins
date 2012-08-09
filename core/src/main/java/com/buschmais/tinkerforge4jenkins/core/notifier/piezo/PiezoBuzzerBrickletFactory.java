@@ -10,12 +10,12 @@ import com.tinkerforge.BrickletPiezoBuzzer;
  * 
  * @author dirk.mahler
  */
-public class PiezoBrickletFactory extends AbstractNotifierDeviceFactory {
+public class PiezoBuzzerBrickletFactory extends AbstractNotifierDeviceFactory {
 
 	@Override
 	public NotifierDevice<BrickletPiezoBuzzer, PiezoBuzzerConfigurationType> create(
 			String uid) {
-		return new PiezoNotifierBricklet(uid, new BrickletPiezoBuzzer(uid));
+		return new PiezoBuzzerNotifierBricklet(uid, new BrickletPiezoBuzzer(uid));
 	}
 
 	@Override
