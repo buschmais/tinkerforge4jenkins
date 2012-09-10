@@ -47,11 +47,14 @@ public class PiezoBuzzerNotifierBricklet
 		// Determine all build states which have changed and add them to a set
 		// ordered by their priority (descending).
 		SortedSet<BuildStateType> changedBuildStates = new TreeSet<BuildStateType>();
+		PiezoBuzzerConfigurationType configuration = getConfiguration();
 		for (JobState jobState : filter(getJobStates().values(),
-				getConfiguration().getJobs())) {
-			BuildStateType previousState = previousJobStates.get(
-					jobState.getName()).getBuildState();
-			if (!jobState.getBuildState().equals(previousState)) {
+				configuration.getJobs())) {
+			JobState previousJobState = previousJobStates.get(jobState
+					.getName());
+			if (previousJobState == null
+					|| !previousJobState.getBuildState().equals(
+							jobState.getBuildState())) {
 				changedBuildStates.add(jobState.getBuildState());
 			}
 		}
@@ -63,22 +66,22 @@ public class PiezoBuzzerNotifierBricklet
 			String morseCode;
 			switch (buildState) {
 			case FAILURE:
-				morseCode = getConfiguration().getOnFailure();
+				morseCode = configuration.getOnFailure();
 				break;
 			case UNSTABLE:
-				morseCode = getConfiguration().getOnUnstable();
+				morseCode = configuration.getOnUnstable();
 				break;
 			case ABORTED:
-				morseCode = getConfiguration().getOnAborted();
+				morseCode = configuration.getOnAborted();
 				break;
 			case UNKNOWN:
-				morseCode = getConfiguration().getOnUnknown();
+				morseCode = configuration.getOnUnknown();
 				break;
 			case NOT_BUILT:
-				morseCode = getConfiguration().getOnNotBuilt();
+				morseCode = configuration.getOnNotBuilt();
 				break;
 			case SUCCESS:
-				morseCode = getConfiguration().getOnSuccess();
+				morseCode = configuration.getOnSuccess();
 				break;
 			default:
 				throw new IllegalStateException("Unknown build state: "
