@@ -17,6 +17,7 @@ import com.buschmais.tinkerforge4jenkins.client.JenkinsHttpClient;
 import com.buschmais.tinkerforge4jenkins.client.PublisherTask;
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
+import com.buschmais.tinkerforge4jenkins.core.registry.NotifierDeviceRegistry;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.AbstractBrickletConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.util.JobStateBuilder;
 import com.tinkerforge.Device;
@@ -42,9 +43,11 @@ public class PublisherTaskTest {
 	public void init() {
 		jenkinsHttpClient = mock(JenkinsHttpClient.class);
 		notifierDevice = mock(NotifierDevice.class);
+		NotifierDeviceRegistry deviceRegistry = mock(NotifierDeviceRegistry.class);
 		List<NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>> notifiers = new ArrayList<NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>>();
 		notifiers.add(notifierDevice);
-		publisherTask = new PublisherTask(jenkinsHttpClient, notifiers);
+		when(deviceRegistry.getNotifierDevices()).thenReturn(notifiers);
+		publisherTask = new PublisherTask(jenkinsHttpClient, deviceRegistry);
 	}
 
 	/**

@@ -39,9 +39,19 @@ public class NotifierDeviceRegistry {
 			.getLogger(NotifierDeviceRegistry.class);
 
 	/**
+	 * The TinkerForge IP connection.
+	 */
+	private IPConnection ipConnection;
+
+	/**
 	 * The configuration for the TinkerForge devices.
 	 */
 	private TinkerForgeConfigurationType configuration;
+
+	/**
+	 * The {@link NotifierDeviceEnumerateListener}.
+	 */
+	private NotifierDeviceEnumerateListener listener;
 
 	/**
 	 * Constructor.
@@ -54,19 +64,13 @@ public class NotifierDeviceRegistry {
 	}
 
 	/**
-	 * Starts the registry and returns the collection of connected devices.
-	 * <p>
-	 * The collection is updated if devices are added or removed (plug and
-	 * play).
-	 * </p>
+	 * Starts the registry.
 	 * 
-	 * @return The collection of devices.
 	 * @throws IOException
 	 *             If there is a communication problem with the TinkerForge
 	 *             devices.
 	 */
-	public Collection<NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>> start()
-			throws IOException {
+	public void start() throws IOException {
 		String host = TINKERFORGE_DEFAULT_HOST;
 		int port = TINKERFORGE_DEFAULT_PORT;
 		if (configuration != null) {
@@ -79,13 +83,39 @@ public class NotifierDeviceRegistry {
 		}
 		LOGGER.info("Connecting to '{}:{}'.", host, port);
 		// Create the IP connection
-		final IPConnection ipcon = new IPConnection(host, port);
-		// Use the enumeration listener for device management.
-		NotifierDeviceEnumerateListener listener = new NotifierDeviceEnumerateListener(
-				ipcon, ServiceLoader.load(NotifierDeviceFactory.class),
-				configuration);
-		ipcon.enumerate(listener);
+		ipConnection = new IPConnection(host, port);
+		// initialize the enumeration listener for device management.
+		listener = new NotifierDeviceEnumerateListener(ipConnection,
+				ServiceLoader.load(NotifierDeviceFactory.class), configuration);
+		ipConnection.enumerate(listener);
+	}
+
+	/**
+	 * Returns the collection of connected devices.
+	 * <p>
+	 * The collection provides a "live" view on connected devices, i.e. it is
+	 * updated every time if devices are added or removed (plug and play).
+	 * </p>
+	 * 
+	 * @return The collection of devices.
+	 */
+	public Collection<NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>> getNotifierDevices() {
+		if (listener == null) {
+			throw new IllegalStateException(
+					"The device registry has not been started.");
+		}
 		return listener.getNotifierDevices().values();
+	}
+
+	/**
+	 * Stops the registry.
+	 */
+	public void stop() {
+		if (ipConnection != null) {
+			LOGGER.info("Destroying ip connection.");
+			ipConnection.destroy();
+		}
+		listener = null;
 	}
 
 }

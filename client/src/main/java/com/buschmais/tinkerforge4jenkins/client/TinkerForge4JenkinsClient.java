@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -24,13 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
 import com.buschmais.tinkerforge4jenkins.core.registry.NotifierDeviceRegistry;
-import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.AbstractBrickletConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.ConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.JenkinsConfigurationType;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.ObjectFactory;
-import com.tinkerforge.Device;
 
 /**
  * The main class for the TinkerForge4Jenkins client.
@@ -92,9 +88,8 @@ public final class TinkerForge4JenkinsClient {
 		// Initialize the connection to the TinkerForge devices.
 		NotifierDeviceRegistry deviceRegistry = new NotifierDeviceRegistry(
 				configuration.getTinkerforge());
-		Collection<NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>> notifiers = null;
 		try {
-			notifiers = deviceRegistry.start();
+			deviceRegistry.start();
 		} catch (IOException e) {
 			logErrorAndExit("Cannot connect to devices.", e);
 		}
@@ -111,7 +106,7 @@ public final class TinkerForge4JenkinsClient {
 				.newScheduledThreadPool(1);
 
 		PublisherTask publisherTask = new PublisherTask(new JenkinsHttpClient(
-				jenkinsConfiguration, new DefaultHttpClient()), notifiers);
+				jenkinsConfiguration, new DefaultHttpClient()), deviceRegistry);
 		publisherTask
 				.setUncaughtExceptionHandler(new PublisherTaskExceptionHandler());
 		scheduledExecutorService.scheduleAtFixedRate(publisherTask, 0,

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.buschmais.tinkerforge4jenkins.core.JobState;
 import com.buschmais.tinkerforge4jenkins.core.NotifierDevice;
+import com.buschmais.tinkerforge4jenkins.core.registry.NotifierDeviceRegistry;
 import com.buschmais.tinkerforge4jenkins.core.schema.configuration.v1.AbstractBrickletConfigurationType;
 import com.tinkerforge.Device;
 
@@ -27,9 +28,9 @@ public class PublisherTask extends Thread {
 			.getLogger(PublisherTask.class);
 
 	/**
-	 * The collection of {@link NotifierDevice}s.
+	 * The {@link NotifierDeviceRegistry}.
 	 */
-	private Collection<NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>> notifierDevices;
+	private NotifierDeviceRegistry deviceRegistry;
 
 	/**
 	 * The {@link JenkinsHttpClient}.
@@ -41,19 +42,20 @@ public class PublisherTask extends Thread {
 	 * 
 	 * @param jenkinsHttpClient
 	 *            The {@link JenkinsHttpClient}.
-	 * @param notifierDevices
-	 *            The collection of {@link NotifierDevice}s.
+	 * @param deviceRegistry
+	 *            The {@link NotifierDeviceRegistry}.
 	 */
-	public PublisherTask(
-			JenkinsHttpClient jenkinsHttpClient,
-			Collection<NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>> notifierDevices) {
-		this.notifierDevices = notifierDevices;
+	public PublisherTask(JenkinsHttpClient jenkinsHttpClient,
+			NotifierDeviceRegistry deviceRegistry) {
 		this.jenkinsHttpClient = jenkinsHttpClient;
+		this.deviceRegistry = deviceRegistry;
 	}
 
 	@Override
 	public void run() {
 		LOGGER.debug("Updating status from Jenkins.");
+		Collection<NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType>> notifierDevices = deviceRegistry
+				.getNotifierDevices();
 		for (NotifierDevice<? extends Device, ? extends AbstractBrickletConfigurationType> notifierDevice : notifierDevices) {
 			notifierDevice.preUpdate();
 		}
